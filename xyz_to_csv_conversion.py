@@ -9,28 +9,34 @@ def xyz_to_csv(xyz_filename, parameters_filename):
 
     bending = activity  = chirality = nLoop = monomers = "N/A"
 
+
+
+
+
+    parameters = ["monomers","extension","bending","diffusion","temperature","activity","timestep",
+                  "nloop","pInterval","fInterval","HeadSize","HeadStiffness","MobilityRatio",
+                  "Opticaltrap","Maxrad","wallparticles","wallRadius","wallOpening",
+                  "arcStartAngle","ChiralityAngle","ChiralityDirection"]
+
+    parameter_dict = {}
+
     with open(parameters_filename, "r") as f:
         for line in f:
-            if "bending" in line:
-                key,value = line.split(":", 1)
-                bending = value.strip()
-            if "activity" in line:
-                key,value = line.split(":", 1)
-                activity = value.strip()
-            if "ChiralityAngle" in line:
-                key,value = line.split(":",1)
-                chirality = value.strip()
-            if "nLoop" in line:
-                key,value = line.split(":",1)
-                nLoop = value.strip()
-            if "monomers" in line:
-                key,value = line.split(":",1)
-                monomers = value.strip()
+            for parameter in parameters:
+                if parameter in line:
+                    key,value = line.split(":", 1)
+                    param_string = value.strip()
+                    param_value = float(param_string)
+                    parameter_dict.update({parameter : param_value})
 
 
-    name_of_csv_file = "./csv_files/" + "F" + activity + "_K" + bending + "_theta" + chirality + ".csv"
+    name_of_csv_file = "./csv_files/" + "F" + str(parameter_dict["activity"]) + \
+            "_K" + str(parameter_dict["bending"]) + "_theta" + \
+            str(parameter_dict["ChiralityAngle"]) + ".csv"
+
     is_there_already_a_csv_file = os.path.exists(name_of_csv_file)
     runNumber = 0
+
     while is_there_already_a_csv_file == True:
         runNumber = runNumber + 1
         name_of_csv_file = name_of_csv_file.replace(".csv","")
@@ -39,7 +45,7 @@ def xyz_to_csv(xyz_filename, parameters_filename):
 
 
     # in the config.xyz file, this line is trying to figure out how many lines constitutes one frame
-    frame_line_length = int(monomers)+2
+    frame_line_length = parameter_dict["monomers"]+2
     coord_rows = []
     with open(xyz_filename, "r") as f:
         line_number = 0 
