@@ -20,6 +20,7 @@ def xyz_to_csv(xyz_filename, parameters_filename):
 
     parameter_dict = {}
 
+    # I'm opening the parameters file, looping over everything, and creating a parameters dictionary
     with open(parameters_filename, "r") as f:
         for line in f:
             for parameter in parameters:
@@ -28,8 +29,13 @@ def xyz_to_csv(xyz_filename, parameters_filename):
                     param_string = value.strip()
                     param_value = float(param_string)
                     parameter_dict.update({parameter : param_value})
+    with open("parameters.py", "w") as f:
+        for key, value in parameter_dict.items():
+            f.write(f"{key} = {value}\n")
 
 
+    # I'm naming my CSV file, then checking if a file already exists with that name 
+    # If there is a file, I'm just adding a "RUN" + # to it until it's unique
     name_of_csv_file = "./csv_files/" + "F" + str(parameter_dict["activity"]) + \
             "_K" + str(parameter_dict["bending"]) + "_theta" + \
             str(parameter_dict["ChiralityAngle"]) + ".csv"
