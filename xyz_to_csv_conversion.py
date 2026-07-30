@@ -27,21 +27,21 @@ def xyz_to_csv(xyz_filename, parameters_filename):
                 monomers = value.strip()
 
 
-    name_of_csv_file = "F" + activity + "_K" + bending + "_theta" + chirality
+    name_of_csv_file = "F" + activity + "_K" + bending + "_theta" + chirality + ".csv"
 
     # in the config.xyz file, this line is trying to figure out how many lines constitutes one frame
-    frame_line_length = int(monomers)+4
+    frame_line_length = int(monomers)+2
     coord_rows = []
     with open(xyz_filename, "r") as f:
         line_number = 0 
         frame = 0
         for line in f:
             line_number = line_number + 1
-            frame = line_number // frame_line_length
+            frame = (line_number-2) // frame_line_length
             # This only works for free polymers. Boundary polymers have type 3 I believe
             if line.startswith("2"):
                 line = line.strip()
-                monomer_number = line_number - frame*frame_line_length -2 + frame
+                monomer_number = line_number - frame*frame_line_length  
                 coordinates = line.split()
                 coordinates.insert(0,frame)
                 coordinates.insert(1,line_number)
