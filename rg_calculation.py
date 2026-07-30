@@ -1,0 +1,44 @@
+import parameters
+import pandas as pd
+import numpy as np
+
+monomers = parameters.monomers
+# nLoop = parameters.nLoop/1000
+nLoop = 1000
+
+
+
+
+
+
+
+
+
+calculated_rows = []
+def calculate_radius_of_gyration(csv_file_path,new_csv_name):
+    frame = 0
+    df = pd.read_csv(csv_file_path)
+    while frame < nLoop:
+        sum = 0
+        monomer = 0
+        xcoords = df[df["frame"] == frame]["xcoord"]
+        ycoords = df[df["frame"] == frame]["ycoord"]
+        x_mean = np.mean(xcoords)
+        y_mean = np.mean(ycoords)
+        for xcoord, ycoord in zip(xcoords,ycoords):
+            x_diff = xcoord-x_mean
+            x_sqr = x_diff*x_diff
+            y_diff = ycoord-y_mean
+            y_sqr = y_diff*y_diff
+            sum = sum + y_sqr+x_sqr
+        Rg_sqrd = sum/monomers
+        Rg = np.sqrt(Rg_sqrd)
+        values_for_rows = [frame,Rg]
+        calculated_rows.append(values_for_rows)
+        frame = frame + 1
+    calculated_df = pd.DataFrame(calculated_rows, columns=["frames","Rg"])
+    calculated_df.to_csv(new_csv_name, index=False)
+
+
+
+calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
