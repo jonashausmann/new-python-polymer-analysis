@@ -23,4 +23,4 @@ while i < nLoops:
         monomer = monomer+1
     i = i + 1
 df = pd.DataFrame(coord_rows, columns=["frame","monomernumber","xcoord","ycoord"])
-df.to_csv("straight_filament_test.csv", index=False)
+df.to_csv("./csv_files/straight_filament_test.csv", index=False)
