@@ -41,7 +41,7 @@ def xyz_to_csv(xyz_filename, parameters_filename):
             # This only works for free polymers. Boundary polymers have type 3 I believe
             if line.startswith("2"):
                 line = line.strip()
-                monomer_number = line_number - frame*frame_line_length  
+                monomer_number = line_number - frame*frame_line_length -2 
                 coordinates = line.split()
                 coordinates.insert(0,frame)
                 coordinates.insert(1,line_number)
