@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 # This is just a reminder to myself that this only works for the free polymer case
 # particle_type = 2
 
@@ -27,7 +28,15 @@ def xyz_to_csv(xyz_filename, parameters_filename):
                 monomers = value.strip()
 
 
-    name_of_csv_file = "F" + activity + "_K" + bending + "_theta" + chirality + ".csv"
+    name_of_csv_file = "./csv_files/" + "F" + activity + "_K" + bending + "_theta" + chirality + ".csv"
+    is_there_already_a_csv_file = os.path.exists(name_of_csv_file)
+    runNumber = 0
+    while is_there_already_a_csv_file == True:
+        runNumber = runNumber + 1
+        name_of_csv_file = name_of_csv_file.replace(".csv","")
+        name_of_csv_file = name_of_csv_file + "_Run" + str(runNumber) + ".csv"
+        is_there_already_a_csv_file = os.path.exists(name_of_csv_file)
+
 
     # in the config.xyz file, this line is trying to figure out how many lines constitutes one frame
     frame_line_length = int(monomers)+2
