@@ -5,6 +5,7 @@ diffusion = 1.0
 temperature = 1.0
 activity = 5.0
 timestep = 1e-05
+nLoop = 5000000.0
 pInterval = 1000.0
 fInterval = 5000000.0
 HeadSize = 0.0

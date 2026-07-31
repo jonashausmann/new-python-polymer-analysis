@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 
 monomers = parameters.monomers
-# nLoop = parameters.nLoop/1000
-nLoop = 1000
+nLoop = parameters.nLoop/1000
+#nLoop = 1000
 
 
 
@@ -14,8 +14,8 @@ nLoop = 1000
 
 
 
-calculated_rows = []
 def calculate_radius_of_gyration(csv_file_path,new_csv_name):
+    calculated_rows = []
     frame = 0
     df = pd.read_csv(csv_file_path)
     while frame < nLoop:
@@ -38,7 +38,10 @@ def calculate_radius_of_gyration(csv_file_path,new_csv_name):
         frame = frame + 1
     calculated_df = pd.DataFrame(calculated_rows, columns=["frames","Rg"])
     calculated_df.to_csv(new_csv_name, index=False)
-
+    '''
+    I'm leaving this here in case I need it for later
+    Rg_mean = np.mean(calculated_df["Rg"])
+'''
 
 
 calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")

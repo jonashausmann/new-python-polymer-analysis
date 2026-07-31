@@ -15,7 +15,7 @@ def xyz_to_csv(xyz_filename, parameters_filename):
 
 
     parameters = ["monomers","extension","bending","diffusion","temperature","activity","timestep",
-                  "nloop","pInterval","fInterval","HeadSize","HeadStiffness","MobilityRatio",
+                  "nLoop","pInterval","fInterval","HeadSize","HeadStiffness","MobilityRatio",
                   "Opticaltrap","Maxrad","wallparticles","wallRadius","wallOpening",
                   "arcStartAngle","ChiralityAngle","ChiralityDirection"]
 
@@ -86,7 +86,7 @@ def xyz_to_csv(xyz_filename, parameters_filename):
 
 
 
-xyz_to_csv("config0.xyz", "input_values.txt")
+xyz_to_csv("./data/not_using_this_data/config0.xyz", "input_values.txt")
 
 
 
