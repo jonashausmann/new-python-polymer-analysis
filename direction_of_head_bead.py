@@ -50,9 +50,8 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
         direction_rows.append((theta*180)/np.pi)
         frame = frame + 1
 
-    calculated_data_df["degrees"] = direction_rows
-    calculated_data_df["new_degrees"] = my_weird_calculated_direction_rows
-    print(np.mean(calculated_data_df["degrees"]))
+    # calculated_data_df["degrees"] = direction_rows
+    calculated_data_df["degrees"] = my_weird_calculated_direction_rows
     print(np.mean(calculated_data_df["new_degrees"]))
 
     calculated_data_df.to_csv(measurement_csv, index=False)
