@@ -33,16 +33,15 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
         degrees = (theta*180)/np.pi 
         if degrees < 0:
             if degrees >= -180 and degrees <= -90:
-                degrees = degrees + 90
-                degrees = degrees * -1
-            if degrees > -90 and degrees < 0:
+                degrees = (degrees + 90)*-1
+            elif degrees > -90 and degrees < 0:
                 degrees = degrees - 90
-        if degrees > 0:
+        elif degrees > 0:
             if degrees > 0 and degrees <= 90:
                 degrees = -90 + degrees
-            if degrees <= 180 and degrees > 90:
+            elif degrees <= 180 and degrees > 90:
                 degrees = 270 - degrees
-        if degrees == 0:
+        elif degrees == 0:
             degrees = -90
                 
 
