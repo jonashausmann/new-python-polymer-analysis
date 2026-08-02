@@ -6,13 +6,15 @@ monomers = parameters.monomers
 #nLoop = parameters.nLoop/1000
 nLoop = 100
 
-def calculate_curvature(coordinate_csv, measurement_csv):
+def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
     df = pd.read_csv(coordinate_csv)
     calculated_data_df = pd.read_csv(measurement_csv)
     frame = 0
 
     
+    test_curv_frame = []
     result_row = []
+    test_curv_data = []
     while frame < (nLoop):
         monomer = 1
         monomer_curvatures = []
@@ -35,30 +37,42 @@ def calculate_curvature(coordinate_csv, measurement_csv):
             monomer_1_unit = monomer_1 / np.linalg.norm(monomer_1)
             monomer_2_unit = monomer_2 / np.linalg.norm(monomer_2)
 
-            theta = np.dot(monomer_1_unit,monomer_2_unit)
+            theta = np.arccos(np.dot(monomer_1_unit,monomer_2_unit))
 
             theta = (theta*180)/np.pi
             theta = round(theta, 5)
 
             monomer_curvatures.append(theta)
+
+            if test_data == True:
+                test_curv_monomer = [frame,monomer,monomer+1,theta]
+                test_curv_frame.append(test_curv_monomer)
+
+            
             monomer = monomer + 1
         row = {
                 "frames" : frame,
                 "mean_curv" : round(np.mean(monomer_curvatures),5),
+                "max_curv_monomer" : round(monomer_curvatures.index(np.max(monomer_curvatures))),
                 "max_curv" : round(np.max(monomer_curvatures),5),
+                "min_curv_monomer" : round(monomer_curvatures.index(np.min(monomer_curvatures))),
                 "min_curv" : round(np.min(monomer_curvatures),5),
                 }
         result_row.append(row)
 
-
+        if test_data == True:
+            test_curv_data.append(test_curv_frame)
 
         if frame % 10 == 0:
             print(f"{frame}/{nLoop}")
-
         frame = frame + 1
+
+    if test_data == True:
+        test_df = pd.DataFrame(test_curv_frame, columns=["frames","monomer1","monomer2","theta"])
+        test_df.to_csv("./calculated_data/testing_theta.csv",index=False)
     new_df = pd.DataFrame(result_row)
     calculated_data_df = calculated_data_df.merge(new_df, on="frames",how="left")
     calculated_data_df.to_csv(measurement_csv, index=False)
     #print(calculated_data_df["mean_curv"].mean())
 
-calculate_curvature("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
+calculate_curvature("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv",True)
