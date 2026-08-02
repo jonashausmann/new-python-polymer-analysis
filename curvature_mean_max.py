@@ -30,6 +30,9 @@ def calculate_curvature(coordinate_csv, measurement_csv):
             x = float(x_2.iloc[0]) - float(x_1.iloc[0])
             y = float(y_2.iloc[0]) - float(y_1.iloc[0])
             theta = np.arctan2(x,y)
+            theta = (theta*180)/np.pi
+            if theta < 0:
+                theta = theta * -1
             monomer_curvatures.append(theta)
             monomer = monomer + 1
         frame_mean = [frame, np.mean(monomer_curvatures)]
