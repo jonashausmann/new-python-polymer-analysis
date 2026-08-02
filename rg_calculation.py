@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 
 monomers = parameters.monomers
-nLoop = parameters.nLoop/1000
-#nLoop = 1000
+#nLoop = parameters.nLoop/1000
+nLoop = 100
 
 
 

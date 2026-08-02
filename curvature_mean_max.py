@@ -3,8 +3,8 @@ import numpy as np
 import parameters
 
 monomers = parameters.monomers
-nLoop = parameters.nLoop/1000
-#nLoop = 100
+#nLoop = parameters.nLoop/1000
+nLoop = 100
 
 def calculate_curvature(coordinate_csv, measurement_csv):
     df = pd.read_csv(coordinate_csv)
@@ -19,6 +19,8 @@ def calculate_curvature(coordinate_csv, measurement_csv):
     max_monomer_rows = []
     min_curv_rows = []
     min_monomer_rows = []
+
+    result_row = []
     
     while frame < nLoop:
         monomer = 1
@@ -47,17 +49,30 @@ def calculate_curvature(coordinate_csv, measurement_csv):
                      round(np.min(monomer_curvatures),5)]
         min_curv_rows.append(frame_min)
 
+        row = {
+                "frames" : frame,
+                "mean_curv" : round(np.mean(monomer_curvatures),5),
+                "max_curv" : round(np.max(monomer_curvatures),5),
+                "min_curv" : round(np.min(monomer_curvatures),5),
+                }
+        result_row.append(row)
+
+
 
         if frame % 10 == 0:
             print(f"{frame}/{nLoop}")
 
         frame = frame + 1
-
+    new_df = pd.DataFrame(result_row)
+    calculated_data_df = calculated_data_df.merge(new_df, on="frames",how="left")
+    calculated_data_df.to_csv(measurement_csv, index=False)
+    print(calculated_data_df["mean_curv"].mean())
+'''
     calculated_data_df["frame","mean_curvature"] = mean_curv_rows
     calculated_data_df["frame","max_curv_bead_index","max_curv"] = max_curv_rows
     calculated_data_df["frame", "min_curv_bead_index", "min_curv"] = min_curv_rows
     #print(calculated_data_df["mean_curvature"].mean())
     calculated_data_df.to_csv(measurement_csv, index=False)
-
+'''
 
 calculate_curvature("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
