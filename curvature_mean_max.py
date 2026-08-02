@@ -33,15 +33,18 @@ def calculate_curvature(coordinate_csv, measurement_csv):
             theta = (theta*180)/np.pi
             if theta < 0:
                 theta = theta * -1
+            theta = round(theta, 5)
             monomer_curvatures.append(theta)
             monomer = monomer + 1
-        frame_mean = [frame, np.mean(monomer_curvatures)]
+        frame_mean = [frame, round(np.mean(monomer_curvatures),5)]
         mean_curv_rows.append(frame_mean)
 
-        frame_max = [frame, monomer_curvatures.index(np.max(monomer_curvatures)), np.max(monomer_curvatures)]
+        frame_max = [frame, monomer_curvatures.index(np.max(monomer_curvatures))-frame*monomers,
+                     round(np.max(monomer_curvatures),5)]
         max_curv_rows.append(frame_max)
 
-        frame_min = [frame, monomer_curvatures.index(np.min(monomer_curvatures)),np.min(monomer_curvatures)]
+        frame_min = [frame, monomer_curvatures.index(np.min(monomer_curvatures))-frame*monomers,
+                     round(np.min(monomer_curvatures),5)]
         min_curv_rows.append(frame_min)
 
 
