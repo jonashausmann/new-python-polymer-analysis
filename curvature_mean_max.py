@@ -12,18 +12,10 @@ def calculate_curvature(coordinate_csv, measurement_csv):
     frame = 0
 
     
-
-    monomer_curvatures = []
-    mean_curv_rows = []
-    max_curv_rows = []
-    max_monomer_rows = []
-    min_curv_rows = []
-    min_monomer_rows = []
-
     result_row = []
-    
     while frame < nLoop:
         monomer = 1
+        monomer_curvatures = []
         while monomer < int(monomers):
             x_1 = df[(df["frame"] == frame) & (df["monomernumber"] == monomer)]["xcoord"]
             y_1 = df[(df["frame"] == frame) & (df["monomernumber"] == monomer)]["ycoord"]
@@ -38,17 +30,6 @@ def calculate_curvature(coordinate_csv, measurement_csv):
             theta = round(theta, 5)
             monomer_curvatures.append(theta)
             monomer = monomer + 1
-        frame_mean = [frame, round(np.mean(monomer_curvatures),5)]
-        mean_curv_rows.append(frame_mean)
-
-        frame_max = [frame, monomer_curvatures.index(np.max(monomer_curvatures))-frame*monomers,
-                     round(np.max(monomer_curvatures),5)]
-        max_curv_rows.append(frame_max)
-
-        frame_min = [frame, monomer_curvatures.index(np.min(monomer_curvatures))-frame*monomers,
-                     round(np.min(monomer_curvatures),5)]
-        min_curv_rows.append(frame_min)
-
         row = {
                 "frames" : frame,
                 "mean_curv" : round(np.mean(monomer_curvatures),5),
@@ -67,12 +48,5 @@ def calculate_curvature(coordinate_csv, measurement_csv):
     calculated_data_df = calculated_data_df.merge(new_df, on="frames",how="left")
     calculated_data_df.to_csv(measurement_csv, index=False)
     print(calculated_data_df["mean_curv"].mean())
-'''
-    calculated_data_df["frame","mean_curvature"] = mean_curv_rows
-    calculated_data_df["frame","max_curv_bead_index","max_curv"] = max_curv_rows
-    calculated_data_df["frame", "min_curv_bead_index", "min_curv"] = min_curv_rows
-    #print(calculated_data_df["mean_curvature"].mean())
-    calculated_data_df.to_csv(measurement_csv, index=False)
-'''
 
 calculate_curvature("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
