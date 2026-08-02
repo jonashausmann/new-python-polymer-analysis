@@ -12,7 +12,6 @@ def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
     frame = 0
 
     
-    test_curv_frame = []
     result_row = []
     test_curv_data = []
     while frame < (nLoop):
@@ -46,29 +45,26 @@ def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
 
             if test_data == True:
                 test_curv_monomer = [frame,monomer,monomer+1,theta]
-                test_curv_frame.append(test_curv_monomer)
+                test_curv_data.append(test_curv_monomer)
 
             
             monomer = monomer + 1
         row = {
                 "frames" : frame,
                 "mean_curv" : round(np.mean(monomer_curvatures),5),
-                "max_curv_monomer" : round(monomer_curvatures.index(np.max(monomer_curvatures))),
+                "max_curv_monomer" : round(monomer_curvatures.index(np.max(monomer_curvatures)))+1,
                 "max_curv" : round(np.max(monomer_curvatures),5),
-                "min_curv_monomer" : round(monomer_curvatures.index(np.min(monomer_curvatures))),
+                "min_curv_monomer" : round(monomer_curvatures.index(np.min(monomer_curvatures)))+1,
                 "min_curv" : round(np.min(monomer_curvatures),5),
                 }
         result_row.append(row)
-
-        if test_data == True:
-            test_curv_data.append(test_curv_frame)
 
         if frame % 10 == 0:
             print(f"{frame}/{nLoop}")
         frame = frame + 1
 
     if test_data == True:
-        test_df = pd.DataFrame(test_curv_frame, columns=["frames","monomer1","monomer2","theta"])
+        test_df = pd.DataFrame(test_curv_data, columns=["frames","monomer1","monomer2","theta"])
         test_df.to_csv("./calculated_data/testing_theta.csv",index=False)
     new_df = pd.DataFrame(result_row)
     calculated_data_df = calculated_data_df.merge(new_df, on="frames",how="left")
