@@ -1,4 +1,4 @@
-import parameters
+from . import parameters
 import pandas as pd
 import numpy as np
 
@@ -44,4 +44,4 @@ def calculate_radius_of_gyration(csv_file_path,new_csv_name):
 '''
 
 
-calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
+#calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")

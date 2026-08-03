@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
-#import analysis
+from analysis import parameters
 
-#monomers = analysis.parameters.monomers 
-#frames = anaylsis.parameters.nLoop/1000
-frames = 1 
-monomers = 7
+monomers = parameters.monomers 
+frames = parameters.nLoop/1000
+frames = 100
 
 
 
@@ -57,7 +56,7 @@ def calculate_turning_number(coordinate_csv, measurement_csv):
 
     measurement_df.to_csv(measurement_csv, index=False)
 
-calculate_turning_number("./data/writhe_data_test.csv","./calculated_data/turning_number_test.csv")
+calculate_turning_number("./csv_files/F5.0_K0.5_theta0.0.csv","./calculated_data/real_polymer_test.csv")
 
 
 

@@ -1,6 +1,6 @@
-import parameters
 import pandas as pd
 import numpy as np
+from . import parameters
 
 nLoop = parameters.nLoop/1000
 #nLoop = 1000
@@ -61,7 +61,7 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
 
 
 
-find_direction_of_head("./csv_files/F5.0_K0.5_theta0.0.csv","./calculated_data/real_polymer_test.csv")
+#find_direction_of_head("./csv_files/F5.0_K0.5_theta0.0.csv","./calculated_data/real_polymer_test.csv")
 
 
 

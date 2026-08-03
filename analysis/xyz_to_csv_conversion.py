@@ -86,7 +86,7 @@ def xyz_to_csv(xyz_filename, parameters_filename):
 
 
 
-xyz_to_csv("./data/not_using_this_data/config0.xyz", "input_values.txt")
+#xyz_to_csv("./data/not_using_this_data/config0.xyz", "input_values.txt")
 
 
 

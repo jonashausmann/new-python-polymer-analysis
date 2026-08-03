@@ -1,9 +1,9 @@
 import pandas as pd 
 import numpy as np
-import parameters
+from . import parameters
 
 monomers = parameters.monomers
-#nLoop = parameters.nLoop/1000
+#nLoop = analysis.parameters.nLoop/1000
 nLoop = 100
 
 def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
@@ -71,4 +71,4 @@ def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
     calculated_data_df.to_csv(measurement_csv, index=False)
     #print(calculated_data_df["mean_curv"].mean())
 
-calculate_curvature("./csv_files/straight_filament_test.csv", "./calculated_data/",True)
+#calculate_curvature("../csv_files/F5.0_K0.5_theta0.0.csv", "../calculated_data/real_polymer_test.csv",True)
