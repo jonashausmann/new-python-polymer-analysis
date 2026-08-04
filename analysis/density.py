@@ -2,11 +2,10 @@ import numpy as np
 import pandas as pd
 from analysis import parameters
 
-monomers = parameters.monomers
-frames = parameters.nLoop/1000
-frames = 100
 
 def compute_density(measurement_csv):
+    monomers = parameters.monomers
+    frames = parameters.nLoop/1000
     df = pd.read_csv(measurement_csv)
     frame = 0
     
@@ -21,4 +20,3 @@ def compute_density(measurement_csv):
     df["density"] = frame_density_row
     df.to_csv(measurement_csv, index=False)
 
-compute_density("./calculated_data/real_polymer_test.csv")

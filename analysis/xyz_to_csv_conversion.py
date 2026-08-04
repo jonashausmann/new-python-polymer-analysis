@@ -40,7 +40,10 @@ def xyz_to_csv(simulation_directory, xyz_filename="config0.xyz", parameters_file
 
     # I'm naming my CSV file, then checking if a file already exists with that name 
     # If there is a file, I'm just adding a "RUN" + # to it until it's unique
-    name_of_csv_file = "./csv_files/" + "F" + str(parameter_dict["activity"]) + \
+    new_directory = simulation_directory + "/csv_files/"
+    os.mkdir(new_directory)
+
+    name_of_csv_file = new_directory + "F" + str(parameter_dict["activity"]) + \
             "_K" + str(parameter_dict["bending"]) + "_theta" + \
             str(parameter_dict["ChiralityAngle"]) + ".csv"
 
@@ -50,7 +53,7 @@ def xyz_to_csv(simulation_directory, xyz_filename="config0.xyz", parameters_file
     while is_there_already_a_csv_file == True:
         runNumber = runNumber + 1
         name_of_csv_file = name_of_csv_file.replace(".csv","")
-        name_of_csv_file = re.sub(r"_Run/d+", name_of_csv_file)
+#        name_of_csv_file = re.sub(r"_Run/d+", name_of_csv_file)
         name_of_csv_file = name_of_csv_file + "_Run" + str(runNumber) + ".csv"
         is_there_already_a_csv_file = os.path.exists(name_of_csv_file)
 
@@ -83,6 +86,8 @@ def xyz_to_csv(simulation_directory, xyz_filename="config0.xyz", parameters_file
     df["zcoord"] = df["zcoord"].astype(float)
     df.drop(['linenumber','particletype','zcoord'], axis=1,inplace=True)
     df.to_csv(name_of_csv_file, index=False)
+
+    return name_of_csv_file
 
 
 

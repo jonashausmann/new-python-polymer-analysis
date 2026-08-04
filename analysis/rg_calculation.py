@@ -2,9 +2,7 @@ from . import parameters
 import pandas as pd
 import numpy as np
 
-monomers = parameters.monomers
-#nLoop = parameters.nLoop/1000
-nLoop = 100
+#nLoop = 100
 
 
 
@@ -15,8 +13,11 @@ nLoop = 100
 
 
 def calculate_radius_of_gyration(csv_file_path,new_csv_name):
+    nLoop = parameters.nLoop/1000
+    monomers = parameters.monomers
     calculated_rows = []
     frame = 0
+    calculated_df = pd.read_csv(new_csv_name)
     df = pd.read_csv(csv_file_path)
     while frame < nLoop:
         sum = 0
@@ -33,10 +34,9 @@ def calculate_radius_of_gyration(csv_file_path,new_csv_name):
             sum = sum + y_sqr+x_sqr
         Rg_sqrd = sum/monomers
         Rg = np.sqrt(Rg_sqrd)
-        values_for_rows = [frame,Rg]
-        calculated_rows.append(values_for_rows)
+        calculated_rows.append(Rg)
         frame = frame + 1
-    calculated_df = pd.DataFrame(calculated_rows, columns=["frames","Rg"])
+    calculated_df = pd.DataFrame(calculated_rows, columns=["Rg"])
     calculated_df.to_csv(new_csv_name, index=False)
     '''
     I'm leaving this here in case I need it for later

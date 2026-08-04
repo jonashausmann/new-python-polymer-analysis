@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 from . import parameters
 
-nLoop = parameters.nLoop/1000
 #nLoop = 1000
 
 def find_direction_of_head(coordinate_csv,measurement_csv):
+    nLoop = parameters.nLoop/1000
     df = pd.read_csv(coordinate_csv)
     calculated_data_df = pd.read_csv(measurement_csv)
     frame = 0
@@ -52,7 +52,6 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
 
     # calculated_data_df["degrees"] = direction_rows
     calculated_data_df["degrees"] = my_weird_calculated_direction_rows
-    print(np.mean(calculated_data_df["new_degrees"]))
 
     calculated_data_df.to_csv(measurement_csv, index=False)
         

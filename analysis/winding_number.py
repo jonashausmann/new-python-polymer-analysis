@@ -1,11 +1,17 @@
 import numpy as np
 import pandas as pd
-monomers = 7
-frames = 1
-
+from analysis import parameters
 
 
 def winding_number_around_head(coordinate_csv, measurement_csv):
+    monomers = parameters.monomers
+    frames = parameters.nLoop/1000
+
+
+
+
+
+
     df = pd.read_csv(coordinate_csv)
     measurement_df = pd.read_csv(measurement_csv)
     frame = 0
