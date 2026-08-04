@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,12 +23,15 @@ def create_frame_graph(measurement_csv, variable_of_interest, destination_folder
 
     title = str(variable_of_interest) + " vs " + str(x_axis)
 
-    ax.set_xlabel(x_axis)
-    ax.set_ylabel(variable_of_interest)
-    ax.set_title(title)
+    ax.set_xlabel(x_axis, fontsize=25)
+    ax.set_ylabel(variable_of_interest, fontsize=25)
+    ax.set_title(title, fontsize=25)
 
+    figure_folder_path = str(destination_folder) + "/graphs/variable_vs_frames/"
+    if os.path.exists(figure_folder_path) == False:
+        os.makedirs(figure_folder_path)
     
-    figure_path = str(destination_folder) + "/" + title 
+    figure_path = str(figure_folder_path) + "/" + title 
 
     plt.savefig(figure_path,dpi=150)
 
