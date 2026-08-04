@@ -6,13 +6,15 @@ import re
 # particle_type = 2
 
 # Usually like 99% of the time, xyz_filename is just output.xyz
-def xyz_to_csv(xyz_filename, parameters_filename):
+def xyz_to_csv(simulation_directory, xyz_filename="config0.xyz", parameters_filename="input_values.txt"):
 
     bending = activity  = chirality = nLoop = monomers = "N/A"
 
 
 
 
+    xyz_filename = simulation_directory + xyz_filename
+    parameters_filename = simulation_directory + parameters_filename
 
     parameters = ["monomers","extension","bending","diffusion","temperature","activity","timestep",
                   "nLoop","pInterval","fInterval","HeadSize","HeadStiffness","MobilityRatio",

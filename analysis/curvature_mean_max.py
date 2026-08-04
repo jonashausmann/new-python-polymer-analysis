@@ -69,6 +69,4 @@ def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
     new_df = pd.DataFrame(result_row)
     calculated_data_df = calculated_data_df.merge(new_df, on="frames",how="left")
     calculated_data_df.to_csv(measurement_csv, index=False)
-    #print(calculated_data_df["mean_curv"].mean())
 
-#calculate_curvature("../csv_files/F5.0_K0.5_theta0.0.csv", "../calculated_data/real_polymer_test.csv",True)
