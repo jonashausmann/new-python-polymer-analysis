@@ -3,3 +3,6 @@ from . import direction_of_head_bead
 from . import rg_calculation
 from . import xyz_to_csv_conversion
 from . import parameters
+from . import turning_number
+from . import winding_number
+from . import density

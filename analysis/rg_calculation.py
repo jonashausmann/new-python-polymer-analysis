@@ -36,7 +36,7 @@ def calculate_radius_of_gyration(csv_file_path,new_csv_name):
         Rg = np.sqrt(Rg_sqrd)
         calculated_rows.append(Rg)
         frame = frame + 1
-    calculated_df = pd.DataFrame(calculated_rows, columns=["Rg"])
+    calculated_df["Rg"] = calculated_rows
     calculated_df.to_csv(new_csv_name, index=False)
     '''
     I'm leaving this here in case I need it for later

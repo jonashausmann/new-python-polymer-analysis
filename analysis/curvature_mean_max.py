@@ -6,7 +6,7 @@ from analysis import parameters
 
 def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
     monomers = parameters.monomers
-    nLoop = analysis.parameters.nLoop/1000
+    nLoop = parameters.nLoop/1000
     df = pd.read_csv(coordinate_csv)
     calculated_data_df = pd.read_csv(measurement_csv)
     frame = 0

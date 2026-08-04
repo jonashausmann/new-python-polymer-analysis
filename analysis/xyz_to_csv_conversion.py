@@ -6,15 +6,15 @@ import re
 # particle_type = 2
 
 # Usually like 99% of the time, xyz_filename is just output.xyz
-def xyz_to_csv(simulation_directory, xyz_filename="config0.xyz", parameters_filename="input_values.txt"):
+def xyz_to_csv(simulation_directory, xyz_filename="/config0.xyz", parameters_filename="/input_values.txt"):
 
     bending = activity  = chirality = nLoop = monomers = "N/A"
 
 
 
 
-    xyz_filename = simulation_directory + xyz_filename
-    parameters_filename = simulation_directory + parameters_filename
+    xyz_filename = str(simulation_directory) + xyz_filename
+    parameters_filename = str(simulation_directory) + parameters_filename
 
     parameters = ["monomers","extension","bending","diffusion","temperature","activity","timestep",
                   "nLoop","pInterval","fInterval","HeadSize","HeadStiffness","MobilityRatio",
@@ -33,7 +33,8 @@ def xyz_to_csv(simulation_directory, xyz_filename="config0.xyz", parameters_file
                     param_value = float(param_string)
                     parameter_dict.update({parameter : param_value})
     # creating the parameters.py file with my new parameters!
-    with open("parameters.py", "w") as f:
+    new_parameters_filename = "./analysis/"+ "parameters.py"
+    with open(new_parameters_filename, "w") as f:
         for key, value in parameter_dict.items():
             f.write(f"{key} = {value}\n")
 
