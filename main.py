@@ -51,7 +51,7 @@ def find_directories_and_run_for_all():
             print(f"Finished initial Calculation for {subsubdir}")
         sort_subsubdirs = sorted(subsubdirs, key=lambda x: int(x.name.split('_')[1]))
 
-        run_average_directory = str(subdir) + "/Run_Averages/"
+        run_average_directory = str(subdir) + "/Averaged_Runs/"
         os.mkdir(run_average_directory)
         run_avg_resolved = Path(run_average_directory).resolve()
         average_df = pd.DataFrame({"run" : np.arange(len(subsubdirs))})
@@ -62,7 +62,9 @@ def find_directories_and_run_for_all():
         for subsubdir in sort_subsubdirs:
             print(f"Starting average calculations for run {run_number}")
             csv_folder = str(subsubdir) + "/csv_files/"
-            csv_file_name = csv_folder.glob("*_measurements.csv")
+            csv_folder_resolved = Path(csv_folder).resolve()
+            csv_file = csv_folder.glob("*_measurements.csv")
+            csv_file_name = str(csv_file)
             measurement_df = pd.read_csv(csv_file_name)
 
             average_rg = np.mean(measurement_df["Rg"])
