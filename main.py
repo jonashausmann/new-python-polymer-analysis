@@ -63,8 +63,8 @@ def find_directories_and_run_for_all():
             print(f"Starting average calculations for run {run_number}")
             csv_folder = str(subsubdir) + "/csv_files/"
             csv_folder_resolved = Path(csv_folder).resolve()
-            csv_file = csv_folder.glob("*_measurements.csv")
-            csv_file_name = str(csv_file)
+            csv_file = list(csv_folder_resolved.glob("*_measurements.csv"))
+            csv_file_name = str(csv_file[0])
             measurement_df = pd.read_csv(csv_file_name)
 
             average_rg = np.mean(measurement_df["Rg"])
