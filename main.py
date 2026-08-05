@@ -43,8 +43,18 @@ def find_directories_and_run_for_all():
         subsubdirs = [p for p in resolved_subdir.iterdir() if p.is_dir()]
         subsubdirs = [p for p in subsubdirs if "RUN" in p.name]
         for subsubdir in subsubdirs:
+            if Path(str(subsubdir) + "/csv_files/").exists():
+                print(f"Skipping {subsubdir}, csv_files already exists")
+                continue
             print(f"Starting Initial Calculations for {subsubdir}")
-            main(subsubdir)
+            try:
+                main(subsubdir)
+            except FileNotFoundError as e:
+                print(f"Skipping {subsubdir}, required file not found: {e}")
+                continue
+            except IndexError as e:
+                print(f"Skipping {subsubdir}, malformed frame data: {e}")
+                continue
             print(f"Finished initial Calculation for {subsubdir}")
         sort_subsubdirs = sorted(subsubdirs, key=lambda x: int(x.name.split('_')[1]))
 
@@ -61,6 +71,9 @@ def find_directories_and_run_for_all():
             csv_folder = str(subsubdir) + "/csv_files/"
             csv_folder_resolved = Path(csv_folder).resolve()
             csv_file = list(csv_folder_resolved.glob("*_measurements.csv"))
+            if len(csv_file) == 0:
+                print(f"Skipping average for {subsubdir}, no measurements csv found")
+                continue
             csv_file_name = str(csv_file[0])
             measurement_df = pd.read_csv(csv_file_name)
 
@@ -88,7 +101,7 @@ def find_directories_and_run_for_all():
 
         average_df = pd.DataFrame(variable_dict)
         run_average_directory = str(subdir) + "/Averaged_Runs/"
-        os.mkdir(run_average_directory)
+        os.makedirs(run_average_directory, exist_ok=True)
         run_avg_resolved = Path(run_average_directory).resolve()
         average_csv_name = str(run_avg_resolved) + "/average.csv"
         average_df.to_csv(average_csv_name, index=False)
