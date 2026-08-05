@@ -6,4 +6,5 @@ F
 csv_files
 calculated_data
 .c
+.c*
 .DS_Store

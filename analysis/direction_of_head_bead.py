@@ -4,10 +4,10 @@ from . import parameters
 
 #nLoop = 1000
 
-def find_direction_of_head(coordinate_csv,measurement_csv):
+def find_direction_of_head(coordinate_df,measurement_df):
     nLoop = parameters.nLoop/1000
-    df = pd.read_csv(coordinate_csv)
-    calculated_data_df = pd.read_csv(measurement_csv)
+    df = coordinate_df
+    calculated_data_df = measurement_df
     frame = 0
 
 
@@ -24,13 +24,16 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
         y_2 = df[(df["frame"] == frame) & (df["monomernumber"] == 2)]["ycoord"]
         x = float(x_2.iloc[0]) -float(x_1.iloc[0])
         y = float(y_2.iloc[0]) - float(y_1.iloc[0])
-        theta = np.arctan2(x,y)
+        theta = np.arctan2(y,x)
+        '''
         head_bead_vector = np.array([x, y])
 
         head_bead_vector_magnitude = np.sqrt(head_bead_vector[0]**2 + head_bead_vector[1]**2)
         head_bead_vector_unit = head_bead_vector / head_bead_vector_magnitude
+'''
         # based on cos^2 + sin^2 = 1, if doing cos = sqrt(1-sin^2)
         degrees = (theta*180)/np.pi 
+        '''
         if degrees < 0:
             if degrees >= -180 and degrees <= -90:
                 degrees = (degrees + 90)*-1
@@ -43,7 +46,7 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
                 degrees = 270 - degrees
         elif degrees == 0:
             degrees = -90
-                
+           '''     
 
 
         my_weird_calculated_direction_rows.append(degrees)
@@ -53,7 +56,7 @@ def find_direction_of_head(coordinate_csv,measurement_csv):
     # calculated_data_df["degrees"] = direction_rows
     calculated_data_df["degrees"] = my_weird_calculated_direction_rows
 
-    calculated_data_df.to_csv(measurement_csv, index=False)
+    return calculated_data_df
         
 
 

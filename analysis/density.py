@@ -3,10 +3,10 @@ import pandas as pd
 from analysis import parameters
 
 
-def compute_density(measurement_csv):
+def compute_density(measurement_df):
     monomers = parameters.monomers
     frames = parameters.nLoop/1000
-    df = pd.read_csv(measurement_csv)
+    df = measurement_df
     frame = 0
     
 
@@ -18,5 +18,5 @@ def compute_density(measurement_csv):
         frame_density_row.append(density)
         frame = frame + 1
     df["density"] = frame_density_row
-    df.to_csv(measurement_csv, index=False)
+    return df
 

@@ -3,17 +3,33 @@ import pandas as pd
 from analysis import parameters
 
 
-def winding_number_around_head(coordinate_csv, measurement_csv):
-    monomers = parameters.monomers
-    frames = parameters.nLoop/1000
+def winding_number_around_head(coordinate_df, measurement_df):
+    monomers = int(parameters.monomers)
+    frames = int(parameters.nLoop/1000)
 
 
 
 
 
 
-    df = pd.read_csv(coordinate_csv)
-    measurement_df = pd.read_csv(measurement_csv)
+    df = coordinate_df
+
+    df = df.sort_values(["frame","monomernumber"])
+    coords = df[["xcoord", "ycoord"]].to_numpy().reshape(frames, monomers, 2)
+
+    head_bead = coords[:, 0:1, :]
+
+    vector_from_head_to_bead = coords - head_bead
+    vector_from_head_to_bead = vector_from_head_to_bead[:, 1:, :]
+    phi = np.degrees(np.arctan2(vector_from_head_to_bead[..., 1], vector_from_head_to_bead[..., 0]))
+    difference_between_angles = np.diff(phi, axis=1)
+    difference_between_angles = (difference_between_angles + 180) % 360.0 - 180.0
+
+    winding_number = difference_between_angles.sum(axis=1) / 360.0
+
+    measurement_df["winding_number"] = winding_number
+    return measurement_df
+    '''
     frame = 0
     turning_number_row = []
     while frame < frames:
@@ -49,4 +65,4 @@ def winding_number_around_head(coordinate_csv, measurement_csv):
     measurement_df["winding_number"] = turning_number_row
 
     measurement_df.to_csv(measurement_csv, index=False)
-
+'''

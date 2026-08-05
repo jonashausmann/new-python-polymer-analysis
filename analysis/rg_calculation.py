@@ -12,13 +12,13 @@ import numpy as np
 
 
 
-def calculate_radius_of_gyration(csv_file_path,new_csv_name):
+def calculate_radius_of_gyration(coordinate_df,measurement_df):
     nLoop = parameters.nLoop/1000
     monomers = parameters.monomers
     calculated_rows = []
     frame = 0
-    calculated_df = pd.read_csv(new_csv_name)
-    df = pd.read_csv(csv_file_path)
+    calculated_df = measurement_df
+    df = coordinate_df
     while frame < nLoop:
         sum = 0
         monomer = 0
@@ -37,7 +37,7 @@ def calculate_radius_of_gyration(csv_file_path,new_csv_name):
         calculated_rows.append(Rg)
         frame = frame + 1
     calculated_df["Rg"] = calculated_rows
-    calculated_df.to_csv(new_csv_name, index=False)
+    return calculated_df
     '''
     I'm leaving this here in case I need it for later
     Rg_mean = np.mean(calculated_df["Rg"])

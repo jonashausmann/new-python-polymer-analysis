@@ -16,22 +16,23 @@ def main(simulation_directory):
 
 
     measurement_csv_name = coordinate_csv_name.replace(".csv","") + "_measurements" + ".csv"
+    coordinate_df = pd.read_csv(coordinate_csv_name)
     measurement_df = pd.DataFrame({'frames' : np.arange(frames)})
-    measurement_df.to_csv(measurement_csv_name, index=False)
     print(f"CSV created: {coordinate_csv_name}")
 
-    analysis.rg_calculation.calculate_radius_of_gyration(coordinate_csv_name, measurement_csv_name)
+    measurement_df = analysis.rg_calculation.calculate_radius_of_gyration(coordinate_df, measurement_df)
     print("Rg Calculated")
-    analysis.direction_of_head_bead.find_direction_of_head(coordinate_csv_name, measurement_csv_name)
+    measurement_df = analysis.direction_of_head_bead.find_direction_of_head(coordinate_df, measurement_df)
     print("Direction of Head Bead Calculated")
-    analysis.curvature_mean_max.calculate_curvature(coordinate_csv_name, measurement_csv_name)
+    measurement_df = analysis.curvature_mean_max.calculate_curvature(coordinate_df, measurement_df)
     print("Curvature Calculated")
-    analysis.turning_number.calculate_turning_number(coordinate_csv_name, measurement_csv_name)
+    measurement_df = analysis.turning_number.calculate_turning_number(coordinate_df, measurement_df)
     print("Turning Number Calculated")
-    analysis.winding_number.winding_number_around_head(coordinate_csv_name, measurement_csv_name)
+    measurement_df = analysis.winding_number.winding_number_around_head(coordinate_df, measurement_df)
     print("Winding Number Calculated")
-    analysis.density.compute_density(measurement_csv_name)
+    measurement_df = analysis.density.compute_density(measurement_df)
     print("Density Calculated")
+    measurement_df.to_csv(measurement_csv_name, index=False)
 
 def find_directories_and_run_for_all():
     resolved_directory = Path("./data/").resolve()
