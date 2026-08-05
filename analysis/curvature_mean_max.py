@@ -59,7 +59,7 @@ def calculate_curvature(coordinate_csv, measurement_csv,test_data=False):
                 }
         result_row.append(row)
 
-        if frame % 10 == 0:
+        if frame % 1000 == 0:
             print(f"{frame}/{nLoop}")
         frame = frame + 1
 

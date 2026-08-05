@@ -5,3 +5,5 @@ config
 F
 csv_files
 calculated_data
+.c
+.DS_Store

@@ -7,7 +7,6 @@ import analysis
 from analysis import parameters
 
 def main(simulation_directory):
-    '''
     simulation_directory = str(simulation_directory)
 
     frames = parameters.nLoop / 1000
@@ -33,12 +32,7 @@ def main(simulation_directory):
     print("Winding Number Calculated")
     analysis.density.compute_density(measurement_csv_name)
     print("Density Calculated")
-'''
-'''
 
-main("/Users/jonashausmann/workspaces/github.com/ucmerced/new-python-polymer-analysis/data/F05_K0.5_theta0.0/RUN_0001/")
-
-'''
 def find_directories_and_run_for_all():
     resolved_directory = Path("./data/").resolve()
     subdirs = [p for p in resolved_directory.iterdir() if p.is_dir()]

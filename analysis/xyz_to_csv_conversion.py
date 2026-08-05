@@ -46,7 +46,7 @@ def xyz_to_csv(simulation_directory, xyz_filename="/config0.xyz", parameters_fil
 
     name_of_csv_file = new_directory + "F" + str(parameter_dict["activity"]) + \
             "_K" + str(parameter_dict["bending"]) + "_theta" + \
-            str(parameter_dict["ChiralityAngle"]) + ".csv"
+            str((parameter_dict["ChiralityAngle"]*180)/np.pi) + ".csv"
 
     is_there_already_a_csv_file = os.path.exists(name_of_csv_file)
     runNumber = 0
