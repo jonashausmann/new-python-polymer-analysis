@@ -1,6 +1,6 @@
 monomers = 50.0
 extension = 20000.0
-bending = 75.0
+bending = 0.5
 diffusion = 1.0
 temperature = 1.0
 activity = 10.0
@@ -17,5 +17,5 @@ wallparticles = 0.0
 wallRadius = 0.0
 wallOpening = 0.0
 arcStartAngle = 0.0
-ChiralityAngle = 0.0
+ChiralityAngle = 0.087266
 ChiralityDirection = -1.0

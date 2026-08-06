@@ -7,7 +7,7 @@ import visualize_data
 from visualize_data import frame_graph
 
 def its_graphing_time():
-    resolved_directory = Path("./data/").resolve()
+    resolved_directory = Path("/Volumes/project_files/ucmerced/2026/monika_simulations/").resolve()
     subdirs = [p for p in resolved_directory.iterdir() if p.is_dir()]
 
     for subdir in subdirs:
