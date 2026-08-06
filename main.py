@@ -6,6 +6,8 @@ from pathlib import Path
 import analysis
 from analysis import parameters
 
+data_directory = "/Volumes/project_files/ucmerced/2026/monika_simulations/"
+
 def main(simulation_directory):
     simulation_directory = str(simulation_directory)
 
@@ -34,8 +36,8 @@ def main(simulation_directory):
     print("Density Calculated")
     measurement_df.to_csv(measurement_csv_name, index=False)
 
-def find_directories_and_run_for_all():
-    resolved_directory = Path("./data/").resolve()
+def find_directories_and_run_for_all(data_directory):
+    resolved_directory = Path(data_directory).resolve()
     subdirs = [p for p in resolved_directory.iterdir() if p.is_dir()]
 
     for subdir in subdirs:
@@ -107,6 +109,16 @@ def find_directories_and_run_for_all():
         average_df.to_csv(average_csv_name, index=False)
         print(f"Calculations Complete for {run_number}")
 
+find_directories_and_run_for_all(data_directory)
+
+
+
+
+
+
+
+        
+        
 
 
 '''
@@ -153,13 +165,3 @@ def find_directories_and_run_for_all():
             average_df["activity"] = parameters.activity
             average_df["theta"] = parameters.ChiralityAngle
 '''
-
-
-
-
-
-        
-        
-
-
-find_directories_and_run_for_all()
