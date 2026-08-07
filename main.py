@@ -101,7 +101,7 @@ def find_directories_and_run_for_all(data_directory):
                 total_counts_over_critical.setdefault(new_variable, []).append(int(count))
                # counts_over_critical[new_variable] = int(count)
             for variable, critical in variables_to_count_under_critical.items():
-                new_variable, count = analysis.times_variable_goes_over_quantity.count_under_critical_value(variable, critical_value, measurement_df)
+                new_variable, count = analysis.times_variable_goes_over_quantity.count_under_critical_value(variable, critical, measurement_df)
                 total_counts_under_critical.setdefault(new_variable, []).append(int(count))
 
                 
