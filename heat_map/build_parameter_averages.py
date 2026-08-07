@@ -4,7 +4,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-DATA_DIR = Path("/Volumes/project_files/ucmerced/2026/monika_simulations").resolve()
+#/Volumes/project_files/ucmerced/2026/monika_simulations
+DATA_DIR = Path("../data").resolve()
 #Path(__file__).resolve().parent.parent / "data"
 OUTPUT_CSV = Path(__file__).resolve().parent / "parameter_averages.csv"
 
