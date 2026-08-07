@@ -6,7 +6,8 @@ from pathlib import Path
 import analysis
 from analysis import parameters
 
-data_directory = "/Volumes/project_files/ucmerced/2026/monika_simulations/"
+data_directory = "./data/"
+#/Volumes/project_files/ucmerced/2026/monika_simulations/
 
 def main(simulation_directory):
     simulation_directory = str(simulation_directory)
@@ -67,7 +68,17 @@ def find_directories_and_run_for_all(data_directory):
         run_number = 1
         variables_to_average_min_max = ["Rg","turning_number",
                                         "winding_number","density"]
+        variables_to_count_over_critical = {
+                "Rg" : 10.0,
+                "mean_curv" : 6,
+                }
+        variables_to_count_under_critical = {
+                "Rg" : 10.0,
+                "mean_curv" : 6,
+                }
         variable_dict = {}
+        total_counts_over_critical = {} 
+        total_counts_under_critical = {}
         for subsubdir in sort_subsubdirs:
             print(f"Starting average calculations for run {run_number}")
             csv_folder = str(subsubdir) + "/csv_files/"
@@ -80,11 +91,24 @@ def find_directories_and_run_for_all(data_directory):
             measurement_df = pd.read_csv(csv_file_name)
 
             variable_dict.setdefault("run", []).append(run_number)
+            total_counts_over_critical.setdefault("run", []).append(run_number)
+            total_counts_under_critical.setdefault("run", []).append(run_number)
 
-            counts_over_critical = analysis.times_variable_goes_over_quantity.count_multiple_variables(measurement_df)
+        
+            # Counting how many times a variable goes over critical value
+            for variable, critical_value in variables_to_count_over_critical.items():
+                new_variable, count = analysis.times_variable_goes_over_quantity.count_surpass_critical_value(variable, critical_value, measurement_df)
+                total_counts_over_critical.setdefault(new_variable, []).append(int(count))
+               # counts_over_critical[new_variable] = int(count)
+            for variable, critical in variables_to_count_under_critical.items():
+                new_variable, count = analysis.times_variable_goes_over_quantity.count_under_critical_value(variable, critical_value, measurement_df)
+                total_counts_under_critical.setdefault(new_variable, []).append(int(count))
 
+                
 
+            
 
+            # Creating mean, max and min data
             for variable in variables_to_average_min_max:
                 variable_mean = variable + "_mean"
                 variable_max = variable + "_max"
@@ -104,8 +128,15 @@ def find_directories_and_run_for_all(data_directory):
             variable_dict.setdefault("activity",[]).append(parameters.activity)
             variable_dict.setdefault("theta",[]).append(parameters.ChiralityAngle)
             run_number = run_number + 1
+        print(total_counts_over_critical)
+        print(total_counts_under_critical)
 
+
+        counts_over_df = pd.DataFrame(total_counts_over_critical)
+        counts_under_df = pd.DataFrame(total_counts_under_critical)
         average_df = pd.DataFrame(variable_dict)
+        average_df = pd.merge(average_df, counts_over_df, on="run",how="right")
+        average_df = pd.merge(average_df, counts_under_df, on="run",how="right")
         run_average_directory = str(subdir) + "/Averaged_Runs/"
         os.makedirs(run_average_directory, exist_ok=True)
         run_avg_resolved = Path(run_average_directory).resolve()
