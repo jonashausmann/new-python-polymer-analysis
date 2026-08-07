@@ -81,6 +81,10 @@ def find_directories_and_run_for_all(data_directory):
 
             variable_dict.setdefault("run", []).append(run_number)
 
+            counts_over_critical = analysis.times_variable_goes_over_quantity.count_multiple_variables(measurement_df)
+
+
+
             for variable in variables_to_average_min_max:
                 variable_mean = variable + "_mean"
                 variable_max = variable + "_max"

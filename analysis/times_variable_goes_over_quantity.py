@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 import parameters
 
-def count_surpass_critical_value(value, critical_point, measurements_csv, run_averages_csv):
-    measurement_df = pd.read_csv(measurements_csv)
-    run_avg_df = pd.read_csv(run_averages_csv)
-    frame = 0
+def count_surpass_critical_value(value, critical_point, measurements_csv):
+    measurement_df = measurements_csv#pd.read_csv(measurements_csv)
+
+
 
 
 
@@ -20,20 +20,20 @@ def count_surpass_critical_value(value, critical_point, measurements_csv, run_av
         value_count_string = value + "_times_under_" + str(critical_point)
 
     
+    return value_count_string, amount_of_times
 
-    print(value_count_string)
-    print(amount_of_times)
 
-'''
-    run_avg_df[value_count_string] = amount_of_times
-    run_avg_df.to_csv(run_averages_csv, index=False)
-'''
-def count_multiple_variables(measurements_csv_path, run_averages_csv):
+
+def count_multiple_variables(measurements_csv_path):
     variables = {
             "Rg" : 10.0,
             "mean_curv" : 6,
             }
+    counts_over_critical = {}
     for variable, critical_value in variables.items():
-        count_surpass_critical_value(variable, critical_value, measurements_csv_path,run_averages_csv)
+        new_variable, count = count_surpass_critical_value(variable, critical_value, measurements_csv_path)
+        counts_over_critical[new_variable] = int(count)
+    return counts_over_critical
 
-count_multiple_variables("../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0_measurements.csv", "../data/F10_K5_theta0.0/Averaged_Runs/average.csv")
+
+#print(count_multiple_variables("../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0_measurements.csv"))
