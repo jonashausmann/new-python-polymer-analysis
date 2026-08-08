@@ -37,7 +37,7 @@ def find_directories_and_run_for_all(data_directory):
     subdirs = [p for p in resolved_directory.iterdir() if p.is_dir()]
 
     finished_parameter_directories = 0
-    total_dirs = sum(1 for _ in resolved_directory.itdir() if _.is_dir())
+    total_dirs = sum(1 for _ in resolved_directory.iterdir() if _.is_dir())
     print(f"Start! There are {total_dirs} directories")
 
     for subdir in subdirs:
@@ -98,16 +98,34 @@ def find_directories_and_run_for_all(data_directory):
             total_counts_under_critical.setdefault("run", []).append(run_number)
 
         
-            # Counting how many times a variable goes over critical value
+            # Counting how many times a variable goes over a critical value
             for variable, critical_value in variables_to_count_over_critical.items():
                 new_variable, count = analysis.times_variable_goes_over_quantity.count_surpass_critical_value(variable, critical_value, measurement_df)
                 total_counts_over_critical.setdefault(new_variable, []).append(int(count))
-               # counts_over_critical[new_variable] = int(count)
+
+                measurement_df = analysis.critical_streaks.count_critical_value_streak_greater_than(measurement_df, variable, critical_value)
+            # Counting how many times a variable goes under a critical value
             for variable, critical in variables_to_count_under_critical.items():
                 new_variable, count = analysis.times_variable_goes_over_quantity.count_under_critical_value(variable, critical, measurement_df)
                 total_counts_under_critical.setdefault(new_variable, []).append(int(count))
+                measurement_df = analysis.critical_streaks.count_critical_value_streak_less_than(measurement_df, variable, critical)
 
                 
+
+
+            # the average streak and the longest streak
+            for variable, critical_value in variables_to_count_over_critical.items():
+                variable_mean = variable + "_over_" + str(critical_value) + "_streak" + "_mean"
+                variable_max = variable + "_over_" + str(critical_value) + "_streak" + "_max"
+                variable_dict.setdefault(variable_mean,[]).append(np.mean(measurement_df[variable]))
+                variable_dict.setdefault(variable_max,[]).append(np.max(measurement_df[variable]))
+
+            # the average streak and the longest streak
+            for variable, critical_value in variables_to_count_under_critical.items():
+                variable_mean = variable + "_under_" + str(critical_value) + "_streak" + "_mean"
+                variable_max = variable + "_under_" + str(critical_value) + "_streak" + "_max"
+                variable_dict.setdefault(variable_mean,[]).append(np.mean(measurement_df[variable]))
+                variable_dict.setdefault(variable_max,[]).append(np.max(measurement_df[variable]))
 
             
 
@@ -150,57 +168,3 @@ def find_directories_and_run_for_all(data_directory):
 
 find_directories_and_run_for_all(data_directory)
 
-
-
-
-
-
-
-        
-        
-
-
-'''
-            average_rg = np.mean(measurement_df["Rg"])
-            average_df["average_rg"] = average_rg
-            min_rg = np.min(measurement_df["Rg"])
-            average_df["min_rg"] = min_rg
-            max_rg = np.max(measurement_df["Rg"])
-            average_df["max_rg"] = max_rg
-
-            average_direct = np.mean(measurement_df["degrees"])
-            average_df["average_direction_of_head"] = average_direct
-
-            average_curv = np.mean(measurement_df["mean_curv"])
-            average_df["average_curv"] = average_curv
-            min_curv = np.min(measurement_df["min_curv"])
-            average_df["min_curv"] = min_curv
-            max_curv = np.max(measurement_df["max_curv"])
-            average_df["max_curv"] = max_curv
-
-            average_turn = np.mean(measurement_df["turning_number"])
-            average_df["average_turn_number"] = average_turn
-            min_turn = np.min(measurement_df["turning_number"])
-            average_df["min_turn_number"] = min_turn
-            max_turn = np.max(measurement_df["turning_number"])
-            average_df["max_turn_number"] = max_turn
-
-            average_wind = np.mean(measurement_df["winding_number"])
-            average_df["average_winding"] = average_wind
-            min_wind = np.min(measurement_df["winding_number"])
-            average_df["min_winding"] = min_wind
-            max_wind = np.max(measurement_df["winding_number"])
-            average_df["max_winding"] = max_wind
-
-            average_density = np.mean(measurement_df["density"])
-            average_df["average_density"] = average_density
-            min_density = np.min(measurement_df["density"])
-            average_df["min_density"] = min_density
-            max_density = np.max(measurement_df["density"])
-            average_df["max_density"] = max_density
-
-            average_df["nLoop"] = parameters.nLoop/1000
-            average_df["bending"] = parameters.bending
-            average_df["activity"] = parameters.activity
-            average_df["theta"] = parameters.ChiralityAngle
-'''
