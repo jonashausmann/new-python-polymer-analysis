@@ -1,11 +1,10 @@
 /data/
 data
-#simulations
-#config
+<<<<<<< HEAD
+=======
+>>>>>>> f630aa0920082fc9a2caf403e936313ece1dd601
 F
-#csv_files
 calculated_data
-.c
 .c*
+.c
 .DS_Store
-#heat_map

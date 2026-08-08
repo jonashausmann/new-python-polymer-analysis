@@ -21,25 +21,24 @@ def main(simulation_directory):
     measurement_csv_name = coordinate_csv_name.replace(".csv","") + "_measurements" + ".csv"
     coordinate_df = pd.read_csv(coordinate_csv_name)
     measurement_df = pd.DataFrame({'frames' : np.arange(frames)})
-    print(f"CSV created: {coordinate_csv_name}")
+    print(f"CSV created in: {coordinate_csv_name.parent.name}")
 
     measurement_df = analysis.rg_calculation.calculate_radius_of_gyration(coordinate_df, measurement_df)
-    print("Rg Calculated")
     measurement_df = analysis.direction_of_head_bead.find_direction_of_head(coordinate_df, measurement_df)
-    print("Direction of Head Bead Calculated")
     measurement_df = analysis.curvature_mean_max.calculate_curvature(coordinate_df, measurement_df)
-    print("Curvature Calculated")
     measurement_df = analysis.turning_number.calculate_turning_number(coordinate_df, measurement_df)
-    print("Turning Number Calculated")
     measurement_df = analysis.winding_number.winding_number_around_head(coordinate_df, measurement_df)
-    print("Winding Number Calculated")
     measurement_df = analysis.density.compute_density(measurement_df)
-    print("Density Calculated")
     measurement_df.to_csv(measurement_csv_name, index=False)
+
 
 def find_directories_and_run_for_all(data_directory):
     resolved_directory = Path(data_directory).resolve()
     subdirs = [p for p in resolved_directory.iterdir() if p.is_dir()]
+
+    finished_parameter_directories = 0
+    total_dirs = sum(1 for _ in resolved_directory.itdir() if _.is_dir())
+    print(f"Start! There are {total_dirs} directories")
 
     for subdir in subdirs:
         resolved_subdir = Path(subdir).resolve()
@@ -69,12 +68,16 @@ def find_directories_and_run_for_all(data_directory):
         variables_to_average_min_max = ["Rg","turning_number",
                                         "winding_number","density"]
         variables_to_count_over_critical = {
-                "Rg" : 10.0,
-                "mean_curv" : 6,
+                "mean_curv" : 27,
+                "max_curv" : 119,
+                "turning_number" : 3.7,
+                "winding_number" : 3.4,
+                "density" : 2,
                 }
         variables_to_count_under_critical = {
-                "Rg" : 10.0,
-                "mean_curv" : 6,
+                "Rg" : 2.7,
+                "winding_number" : -3.4,
+                "turning_number" : -3.7,
                 }
         variable_dict = {}
         total_counts_over_critical = {} 
@@ -142,7 +145,8 @@ def find_directories_and_run_for_all(data_directory):
         run_avg_resolved = Path(run_average_directory).resolve()
         average_csv_name = str(run_avg_resolved) + "/average.csv"
         average_df.to_csv(average_csv_name, index=False)
-        print(f"Calculations Complete for {run_number}")
+        finished_parameter_directories = finished_parameter_directories + 1
+        print(f"Progress :{finished_parameter_directories}/{total_dirs}")
 
 find_directories_and_run_for_all(data_directory)
 
