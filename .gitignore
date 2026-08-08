@@ -1,11 +1,7 @@
-#/data/
-#data
-#simulations
-#config
+/data/
+data
 F
-#csv_files
 calculated_data
-.c
 .c*
+.c
 .DS_Store
-#heat_map
