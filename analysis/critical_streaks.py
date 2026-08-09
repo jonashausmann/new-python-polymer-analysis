@@ -1,17 +1,17 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 from . import parameters
 
-def count_critical_value_streak_greater_than(measurement_df, critical_variable, critical_value):
-    df = measurement_df#pd.read_csv(measurement_df)
-    frames = int(parameters.nLoop/parameters.pInterval)
+
+def count_critical_value_streak_greater_than(
+    measurement_df, critical_variable, critical_value
+):
+    df = measurement_df  # pd.read_csv(measurement_df)
+    frames = int(parameters.nLoop / parameters.pInterval)
     frame = 0
     streak = 0
     streaks = []
-    
-
-
-
 
     while frame < frames:
         frame_df = df[(df["frames"] == frame)]
@@ -28,16 +28,15 @@ def count_critical_value_streak_greater_than(measurement_df, critical_variable, 
     df[streak_name] = streaks
     return df
 
-def count_critical_value_streak_less_than(measurement_df, critical_variable, critical_value):
-    df = measurement_df#pd.read_csv(measurement_df)
-    frames = int(parameters.nLoop/parameters.pInterval)
+
+def count_critical_value_streak_less_than(
+    measurement_df, critical_variable, critical_value
+):
+    df = measurement_df  # pd.read_csv(measurement_df)
+    frames = int(parameters.nLoop / parameters.pInterval)
     frame = 0
     streak = 0
     streaks = []
-    
-
-
-
 
     while frame < frames:
         frame_df = df[(df["frames"] == frame)]
@@ -53,6 +52,3 @@ def count_critical_value_streak_less_than(measurement_df, critical_variable, cri
     streak_name = critical_variable + "_under_" + str(critical_value) + "_streak"
     df[streak_name] = streaks
     return df
-
-
-
