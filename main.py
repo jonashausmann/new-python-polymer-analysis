@@ -1,13 +1,20 @@
 import os
+import re
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-import analysis
 import numpy as np
 import pandas as pd
+
+import analysis
 from analysis import parameters
 
 data_directory = "./data/"
 # /Volumes/project_files/ucmerced/2026/monika_simulations/
+
+DIR_NAME_PATTERN = re.compile(
+    r"^F(?P<F>[0-9.]+)_K(?P<K>[0-9.]+)_theta(?P<theta>[0-9.]+)$"
+)
 
 
 def main(simulation_directory):
@@ -43,7 +50,24 @@ def main(simulation_directory):
         coordinate_df, measurement_df
     )
     measurement_df = analysis.density.compute_density(measurement_df)
+    measurement_df = analysis.head_nearest_neighbors.count_nearest_neighbors(
+        coordinate_df, measurement_df
+    )
     measurement_df.to_csv(measurement_csv_name, index=False)
+
+
+def run_initial_calculation(subsubdir):
+    subsubdir = str(subsubdir)
+    if Path(subsubdir + "/csv_files/").exists():
+        return f"Skipping {subsubdir}, csv_files already exists"
+    print(f"Starting Initial Calculations for {subsubdir}")
+    try:
+        main(subsubdir)
+    except FileNotFoundError as e:
+        return f"Skipping {subsubdir}, required file not found: {e}"
+    except IndexError as e:
+        return f"Skipping {subsubdir}, malformed frame data: {e}"
+    return f"Finished initial Calculation for {subsubdir}"
 
 
 def find_directories_and_run_for_all(data_directory):
@@ -58,20 +82,11 @@ def find_directories_and_run_for_all(data_directory):
         resolved_subdir = Path(subdir).resolve()
         subsubdirs = [p for p in resolved_subdir.iterdir() if p.is_dir()]
         subsubdirs = [p for p in subsubdirs if "RUN" in p.name]
-        for subsubdir in subsubdirs:
-            if Path(str(subsubdir) + "/csv_files/").exists():
-                print(f"Skipping {subsubdir}, csv_files already exists")
-                continue
-            print(f"Starting Initial Calculations for {subsubdir}")
-            try:
-                main(subsubdir)
-            except FileNotFoundError as e:
-                print(f"Skipping {subsubdir}, required file not found: {e}")
-                continue
-            except IndexError as e:
-                print(f"Skipping {subsubdir}, malformed frame data: {e}")
-                continue
-            print(f"Finished initial Calculation for {subsubdir}")
+        with ProcessPoolExecutor() as executor:
+            for status in executor.map(
+                run_initial_calculation, [str(s) for s in subsubdirs]
+            ):
+                print(status)
         sort_subsubdirs = sorted(subsubdirs, key=lambda x: int(x.name.split("_")[1]))
 
         #        average_df = pd.DataFrame({"run" : np.arange(len(subsubdirs))})
@@ -79,6 +94,7 @@ def find_directories_and_run_for_all(data_directory):
         # average_df.to_csv(average_csv_name, index=False)
 
         run_number = 1
+        dir_name_match = DIR_NAME_PATTERN.match(Path(subdir).name)
         variables_to_average_min_max = [
             "Rg",
             "turning_number",
@@ -207,12 +223,28 @@ def find_directories_and_run_for_all(data_directory):
             )
 
             variable_dict.setdefault("nLoop", []).append(parameters.nLoop / 1000)
-            variable_dict.setdefault("bending", []).append(parameters.bending)
-            variable_dict.setdefault("activity", []).append(parameters.activity)
-            variable_dict.setdefault("theta", []).append(parameters.ChiralityAngle)
+            variable_dict.setdefault("bending", []).append(
+                float(dir_name_match.group("K"))
+                if dir_name_match
+                else parameters.bending
+            )
+            variable_dict.setdefault("activity", []).append(
+                float(dir_name_match.group("F"))
+                if dir_name_match
+                else parameters.activity
+            )
+            variable_dict.setdefault("theta", []).append(
+                float(dir_name_match.group("theta"))
+                if dir_name_match
+                else np.degrees(parameters.ChiralityAngle)
+            )
             run_number = run_number + 1
         print(total_counts_over_critical)
         print(total_counts_under_critical)
+
+        if len(variable_dict) == 0:
+            print(f"Skipping average for {subdir}, no runs produced measurements")
+            continue
 
         counts_over_df = pd.DataFrame(total_counts_over_critical)
         counts_under_df = pd.DataFrame(total_counts_under_critical)
@@ -228,4 +260,5 @@ def find_directories_and_run_for_all(data_directory):
         print(f"Progress :{finished_parameter_directories}/{total_dirs}")
 
 
-find_directories_and_run_for_all(data_directory)
+if __name__ == "__main__":
+    find_directories_and_run_for_all(data_directory)

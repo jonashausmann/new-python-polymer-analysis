@@ -8,3 +8,4 @@ from . import winding_number
 from . import density
 from . import times_variable_goes_over_quantity
 from . import critical_streaks
+from . import head_nearest_neighbors

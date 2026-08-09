@@ -1,58 +1,48 @@
 import numpy as np
 import pandas as pd
 
-import parameters
+from analysis import parameters
 
 
-# Improve performance
-def count_nearest_neighbors(coordinate_df, measurements_df):
-    interm_measurements_df = pd.read_csv(measurements_df)
-    df = pd.read_csv(coordinate_df)
+def count_nearest_neighbors(coordinate_df, measurement_df):
     monomers = int(parameters.monomers)
     frames = int(parameters.nLoop / parameters.pInterval)
+
+    df = coordinate_df.sort_values(["frame", "monomernumber"])
+    coords = df[["xcoord", "ycoord"]].to_numpy().reshape(frames, monomers, 2)
+
+    head_bead = coords[:, 0:1, :]
+    vector_from_head_to_bead = coords[:, 1:, :] - head_bead
+    distances = np.linalg.norm(vector_from_head_to_bead, axis=2)
+    within_one = distances <= 1
+
+    neighbor_count = within_one.sum(axis=1)
+
+    monomer_numbers = np.arange(2, monomers + 1)
+    neighbor_lists = []
     frame = 0
-
-    frames_neighbor_list = []
     while frame < frames:
-        nearest_neighbors = 0
-
-        monomer = 2
-        # head bead coordinates
-        x_1 = df[(df["frame"] == frame) & (df["monomernumber"] == 1)]["xcoord"]
-        y_1 = df[(df["frame"] == frame) & (df["monomernumber"] == 1)]["ycoord"]
+        neighbor_indices = np.nonzero(within_one[frame])[0]
         nearest_neighbor_list = []
-        while monomer < monomers + 1:
-            x_2 = df[(df["frame"] == frame) & (df["monomernumber"] == monomer)][
-                "xcoord"
-            ]
-            y_2 = df[(df["frame"] == frame) & (df["monomernumber"] == monomer)][
-                "ycoord"
-            ]
-            x = float(x_2.iloc[0]) - float(x_1.iloc[0])
-            y = float(y_2.iloc[0]) - float(y_1.iloc[0])
-            diff_vec = np.array([x, y])
-            if np.linalg.norm(diff_vec) <= 1:
-                nearest_neighbors = nearest_neighbors + 1
-                nearest_neighbor_list.append(int(monomer))
-                nearest_neighbor_list.append(np.linalg.norm(diff_vec))
-            monomer = monomer + 1
-        frames_neighbor_list.append(
-            [int(frame), int(nearest_neighbors), nearest_neighbor_list]
-        )
-        if frame % 100 == 0:
-            print(f"{frame}/{frames}")
+        for index in neighbor_indices:
+            nearest_neighbor_list.append(int(monomer_numbers[index]))
+            nearest_neighbor_list.append(float(distances[frame, index]))
+        neighbor_lists.append(nearest_neighbor_list)
         frame = frame + 1
+
     neighbor_df = pd.DataFrame(
-        frames_neighbor_list,
-        columns=["frames", "neighbor_count", "neighbor_monomor_neighbor_distance"],
+        {
+            "frames": np.arange(frames),
+            "neighbor_count": neighbor_count.astype(int),
+            "neighbor_monomor_neighbor_distance": neighbor_lists,
+        }
     )
-    interm_measurements_df = pd.merge(
-        interm_measurements_df, neighbor_df, on="frames", how="right"
-    )
-    interm_measurements_df.to_csv(measurements_df, index=False)
+
+    measurement_df = pd.merge(measurement_df, neighbor_df, on="frames", how="right")
+    return measurement_df
 
 
-count_nearest_neighbors(
-    "../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0.csv",
-    "../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0_measurements.csv",
-)
+# count_nearest_neighbors(
+#     "../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0.csv",
+#     "../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0_measurements.csv",
+# )

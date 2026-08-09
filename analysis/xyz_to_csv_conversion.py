@@ -34,9 +34,11 @@ def xyz_to_csv(simulation_directory, xyz_filename="/config0.xyz", parameters_fil
                     parameter_dict.update({parameter : param_value})
     # creating the parameters.py file with my new parameters!
     new_parameters_filename = "./analysis/"+ "parameters.py"
-    with open(new_parameters_filename, "w") as f:
+    temp_parameters_filename = new_parameters_filename + "." + str(os.getpid()) + ".tmp"
+    with open(temp_parameters_filename, "w") as f:
         for key, value in parameter_dict.items():
             f.write(f"{key} = {value}\n")
+    os.replace(temp_parameters_filename, new_parameters_filename)
 
 
     # I'm naming my CSV file, then checking if a file already exists with that name 
