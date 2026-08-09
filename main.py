@@ -1,3 +1,4 @@
+import ast
 import os
 import re
 from concurrent.futures import ProcessPoolExecutor
@@ -15,6 +16,21 @@ data_directory = "./data/"
 DIR_NAME_PATTERN = re.compile(
     r"^F(?P<F>[0-9.]+)_K(?P<K>[0-9.]+)_theta(?P<theta>[0-9.]+)$"
 )
+
+# Shared critical-value config, used both when writing each run's per-frame
+# streak columns (in main, run in parallel) and when averaging the runs.
+variables_to_count_over_critical = {
+    "mean_curv": 27,
+    "max_curv": 119,
+    "turning_number": 3.7,
+    "winding_number": 3.4,
+    "density": 2,
+}
+variables_to_count_under_critical = {
+    "Rg": 2.7,
+    "winding_number": -3.4,
+    "turning_number": -3.7,
+}
 
 
 def main(simulation_directory):
@@ -53,6 +69,23 @@ def main(simulation_directory):
     measurement_df = analysis.head_nearest_neighbors.count_nearest_neighbors(
         coordinate_df, measurement_df
     )
+
+    # Per-frame critical-value streak columns, persisted with each run so the
+    # per-frame streak signal survives (previously it was computed only in the
+    # averaging step and discarded). Runs inside each parallel worker.
+    for variable, critical_value in variables_to_count_over_critical.items():
+        measurement_df = (
+            analysis.critical_streaks.count_critical_value_streak_greater_than(
+                measurement_df, variable, critical_value
+            )
+        )
+    for variable, critical_value in variables_to_count_under_critical.items():
+        measurement_df = (
+            analysis.critical_streaks.count_critical_value_streak_less_than(
+                measurement_df, variable, critical_value
+            )
+        )
+
     measurement_df.to_csv(measurement_csv_name, index=False)
 
 
@@ -101,18 +134,6 @@ def find_directories_and_run_for_all(data_directory):
             "winding_number",
             "density",
         ]
-        variables_to_count_over_critical = {
-            "mean_curv": 27,
-            "max_curv": 119,
-            "turning_number": 3.7,
-            "winding_number": 3.4,
-            "density": 2,
-        }
-        variables_to_count_under_critical = {
-            "Rg": 2.7,
-            "winding_number": -3.4,
-            "turning_number": -3.7,
-        }
         variable_dict = {}
         total_counts_over_critical = {}
         total_counts_under_critical = {}
@@ -165,33 +186,33 @@ def find_directories_and_run_for_all(data_directory):
 
             # the average streak and the longest streak
             for variable, critical_value in variables_to_count_over_critical.items():
-                variable_mean = (
-                    variable + "_over_" + str(critical_value) + "_streak" + "_mean"
+                streak_column = (
+                    variable + "_over_" + str(critical_value) + "_streak"
                 )
-                variable_max = (
-                    variable + "_over_" + str(critical_value) + "_streak" + "_max"
-                )
+                variable_mean = streak_column + "_mean"
+                variable_max = streak_column + "_max"
                 variable_dict.setdefault(variable_mean, []).append(
-                    np.mean(measurement_df[variable])
+                    np.mean(measurement_df[streak_column])
                 )
                 variable_dict.setdefault(variable_max, []).append(
-                    np.max(measurement_df[variable])
+                    np.max(measurement_df[streak_column])
                 )
 
             # the average streak and the longest streak
             for variable, critical_value in variables_to_count_under_critical.items():
-                variable_mean = (
-                    variable + "_under_" + str(critical_value) + "_streak" + "_mean"
+                streak_column = (
+                    variable + "_under_" + str(critical_value) + "_streak"
                 )
-                variable_max = (
-                    variable + "_under_" + str(critical_value) + "_streak" + "_max"
-                )
+                variable_mean = streak_column + "_mean"
+                variable_max = streak_column + "_max"
                 variable_dict.setdefault(variable_mean, []).append(
-                    np.mean(measurement_df[variable])
+                    np.mean(measurement_df[streak_column])
                 )
                 variable_dict.setdefault(variable_max, []).append(
-                    np.max(measurement_df[variable])
+                    np.max(measurement_df[streak_column])
                 )
+
+            # nearest neighbor max and mean count
 
             # Creating mean, max and min data
             for variable in variables_to_average_min_max:
@@ -221,6 +242,51 @@ def find_directories_and_run_for_all(data_directory):
             variable_dict.setdefault("min_curv_min", []).append(
                 np.min(measurement_df["min_curv"])
             )
+
+            variable_dict.setdefault("mean_neighbor_count", []).append(
+                np.mean(measurement_df["neighbor_count"])
+            )
+            variable_dict.setdefault("max_neighbor_count", []).append(
+                np.max(measurement_df["neighbor_count"])
+            )
+
+            def split_monomer_and_distance(string_list):
+                if string_list == "[]":
+                    return [], []
+                lst = ast.literal_eval(string_list)
+                monomers = lst[0::2]
+                distances = lst[1::3]
+                return monomers, distances
+
+            measurement_df["nearest_monomers"], measurement_df["monomer_distances"] = (
+                zip(
+                    *measurement_df["neighbor_monomor_neighbor_distance"].apply(
+                        split_monomer_and_distance
+                    )
+                )
+            )
+
+            all_nearest_monomers = [
+                x for sublist in measurement_df["nearest_monomers"] for x in sublist
+            ]
+            all_monomer_distances = [
+                x for sublist in measurement_df["monomer_distances"] for x in sublist
+            ]
+
+            # mean_monomer = np.mean(all_nearest_monomers) if all_nearest_monomers else np.nan
+            mean_distance = (
+                np.mean(all_monomer_distances) if all_monomer_distances else np.nan
+            )
+            max_monomer = (
+                np.max(all_nearest_monomers) if all_nearest_monomers else np.nan
+            )
+            min_distance = (
+                np.min(all_monomer_distances) if all_monomer_distances else np.nan
+            )
+
+            variable_dict.setdefault("max_neighbor_monomer", []).append(max_monomer)
+            variable_dict.setdefault("mean_neighbor_distance", []).append(mean_distance)
+            variable_dict.setdefault("min_neighbor_distance", []).append(min_distance)
 
             variable_dict.setdefault("nLoop", []).append(parameters.nLoop / 1000)
             variable_dict.setdefault("bending", []).append(

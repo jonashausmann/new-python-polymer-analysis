@@ -20,9 +20,11 @@ def count_nearest_neighbors(coordinate_df, measurement_df):
 
     monomer_numbers = np.arange(2, monomers + 1)
     neighbor_lists = []
+    max_neighbor = []
     frame = 0
     while frame < frames:
         neighbor_indices = np.nonzero(within_one[frame])[0]
+        max_neighbor.append(int(max(neighbor_indices, default=0) + 2))
         nearest_neighbor_list = []
         for index in neighbor_indices:
             nearest_neighbor_list.append(int(monomer_numbers[index]))
@@ -35,6 +37,7 @@ def count_nearest_neighbors(coordinate_df, measurement_df):
             "frames": np.arange(frames),
             "neighbor_count": neighbor_count.astype(int),
             "neighbor_monomor_neighbor_distance": neighbor_lists,
+            "max_neighbor_monomer": max_neighbor,
         }
     )
 
