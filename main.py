@@ -85,7 +85,7 @@ def main(simulation_directory):
                 measurement_df, variable, critical_value
             )
         )
-    measurement_df = analysis.angle_between_head_and_tail_neighbors.find_angle_between(
+    measurement_df = analysis.angle_between_head_and_tail_neighbor.find_angle_between(
         measurement_df, coordinate_df
     )
 

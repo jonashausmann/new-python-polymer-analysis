@@ -1,5 +1,5 @@
 from . import (
-    angle_between_head_and_tail_neighbors,
+    angle_between_head_and_tail_neighbor,
     critical_streaks,
     curvature_mean_max,
     density,
