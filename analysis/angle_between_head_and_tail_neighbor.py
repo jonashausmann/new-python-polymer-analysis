@@ -50,6 +50,8 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer):
     df["head_and_tail_angle_diff"] = tail_head_angle_diff_row
     df["tail_direction"] = tail_rows
 
+    return df
+
 
 
             

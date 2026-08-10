@@ -9,3 +9,4 @@ from . import density
 from . import times_variable_goes_over_quantity
 from . import critical_streaks
 from . import head_nearest_neighbors
+from . import angle_between_head_and_tail_neighbors
