@@ -8,3 +8,4 @@ calculated_data
 .c*
 .c
 .DS_Store
+./heat_map/figures/
