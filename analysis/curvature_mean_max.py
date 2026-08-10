@@ -4,14 +4,14 @@ import pandas as pd
 from analysis import parameters
 
 
-def calculate_curvature(coordinate_df, measurement_df, test_data=False):
+def calculate_curvature(coordinate_df, measurement_df, debug=False):
+    if debug:
+        print("Calculating curvature")
+
     monomers = int(parameters.monomers)
     frames = int(parameters.nLoop / 1000)
     df = coordinate_df
     calculated_data_df = measurement_df
-
-    result_row = []
-    test_curv_data = []
 
     df = df.sort_values(["frame", "monomernumber"])
     coords = df[["xcoord", "ycoord"]].to_numpy().reshape(frames, monomers, 2)

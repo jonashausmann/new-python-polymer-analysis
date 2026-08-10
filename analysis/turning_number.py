@@ -1,39 +1,35 @@
 import numpy as np
 import pandas as pd
+
 from analysis import parameters
 
 
+def calculate_turning_number(coordinate_df, measurement_df, debug=False):
+    if debug:
+        print("Turning number")
 
-
-
-
-
-
-
-
-
-def calculate_turning_number(coordinate_df, measurement_df):
     monomers = int(parameters.monomers)
-    frames = int(parameters.nLoop/1000)
+    frames = int(parameters.nLoop / 1000)
     df = coordinate_df
 
-    df = df.sort_values(["frame","monomernumber"])
+    df = df.sort_values(["frame", "monomernumber"])
 
-    coords = df[["xcoord","ycoord"]].to_numpy().reshape(frames, monomers, 2)
+    coords = df[["xcoord", "ycoord"]].to_numpy().reshape(frames, monomers, 2)
 
     bead_vectors = np.diff(coords, axis=1)
 
-    phi = np.degrees(np.arctan2(bead_vectors[..., 1], bead_vectors[...,0]))
+    phi = np.degrees(np.arctan2(bead_vectors[..., 1], bead_vectors[..., 0]))
     diffreence_between_bond_angles = np.diff(phi, axis=1)
-    diffreence_between_bond_angles = (diffreence_between_bond_angles + 180.0) % 360 - 180
+    diffreence_between_bond_angles = (
+        diffreence_between_bond_angles + 180.0
+    ) % 360 - 180
 
-    turning_number = diffreence_between_bond_angles.sum(axis=1)/360.0
+    turning_number = diffreence_between_bond_angles.sum(axis=1) / 360.0
 
     measurement_df["turning_number"] = turning_number
     return measurement_df
 
-
-    '''
+    """
     frame = 0
     turning_number_row = []
     while frame < frames:
@@ -70,4 +66,4 @@ def calculate_turning_number(coordinate_df, measurement_df):
     measurement_df["turning_number"] = turning_number_row
 
     measurement_df.to_csv(measurement_csv, index=False)
-'''
+"""

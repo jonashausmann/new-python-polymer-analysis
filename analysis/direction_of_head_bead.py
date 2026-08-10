@@ -6,7 +6,10 @@ from . import parameters
 # nLoop = 1000
 
 
-def find_direction_of_head(coordinate_df, measurement_df):
+def find_direction_of_head(coordinate_df, measurement_df, debug=False):
+    if debug:
+        print("Finding direction of head")
+
     nLoop = parameters.nLoop / 1000
     df = coordinate_df
     calculated_data_df = measurement_df

@@ -4,7 +4,10 @@ import pandas as pd
 from analysis import parameters
 
 
-def count_nearest_neighbors(coordinate_df, measurement_df):
+def count_nearest_neighbors(coordinate_df, measurement_df, debug=False):
+    if debug:
+        print("Calculating nearest neighbors")
+
     monomers = int(parameters.monomers)
     frames = int(parameters.nLoop / parameters.pInterval)
 

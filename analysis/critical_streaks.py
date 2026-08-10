@@ -10,8 +10,10 @@ def _consecutive_streak(condition):
 
 
 def count_critical_value_streak_greater_than(
-    measurement_df, critical_variable, critical_value
+    measurement_df, critical_variable, critical_value, debug=False
 ):
+    if debug:
+        print(f"Finding {critical_variable} over {critical_value}")
     # count total frames that are under critical value
     df = measurement_df  # pd.read_csv(measurement_df)
     condition = df[critical_variable].to_numpy() >= critical_value
@@ -26,8 +28,10 @@ def count_critical_value_streak_greater_than(
 
 
 def count_critical_value_streak_less_than(
-    measurement_df, critical_variable, critical_value
+    measurement_df, critical_variable, critical_value, debug=False
 ):
+    if debug:
+        print(f"Finding {critical_variable} under {critical_value}")
     # count total frames that are under critical value
     df = measurement_df  # pd.read_csv(measurement_df)
     condition = df[critical_variable].to_numpy() <= critical_value

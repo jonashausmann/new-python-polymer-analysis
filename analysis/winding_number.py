@@ -4,7 +4,9 @@ import pandas as pd
 from analysis import parameters
 
 
-def winding_number_around_head(coordinate_df, measurement_df):
+def winding_number_around_head(coordinate_df, measurement_df, debug=False):
+    if debug:
+        print("Winding number")
     monomers = int(parameters.monomers)
     frames = int(parameters.nLoop / 1000)
 

@@ -10,6 +10,8 @@ import pandas as pd
 import analysis
 from analysis import parameters
 
+debug = True
+
 data_directory = "./data/"
 # /Volumes/project_files/ucmerced/2026/monika_simulations/
 
@@ -51,23 +53,23 @@ def main(simulation_directory):
     print(f"CSV created in: {coordinate_csv_path.parent.name}")
 
     measurement_df = analysis.rg_calculation.calculate_radius_of_gyration(
-        coordinate_df, measurement_df
+        coordinate_df, measurement_df, debug
     )
     measurement_df = analysis.direction_of_head_bead.find_direction_of_head(
-        coordinate_df, measurement_df
+        coordinate_df, measurement_df, debug
     )
     measurement_df = analysis.curvature_mean_max.calculate_curvature(
-        coordinate_df, measurement_df
+        coordinate_df, measurement_df, debug
     )
     measurement_df = analysis.turning_number.calculate_turning_number(
-        coordinate_df, measurement_df
+        coordinate_df, measurement_df, debug
     )
     measurement_df = analysis.winding_number.winding_number_around_head(
-        coordinate_df, measurement_df
+        coordinate_df, measurement_df, debug
     )
-    measurement_df = analysis.density.compute_density(measurement_df)
+    measurement_df = analysis.density.compute_density(measurement_df, debug)
     measurement_df = analysis.head_nearest_neighbors.count_nearest_neighbors(
-        coordinate_df, measurement_df
+        coordinate_df, measurement_df, debug
     )
 
     # Per-frame critical-value streak columns, persisted with each run so the
@@ -76,17 +78,17 @@ def main(simulation_directory):
     for variable, critical_value in variables_to_count_over_critical.items():
         measurement_df = (
             analysis.critical_streaks.count_critical_value_streak_greater_than(
-                measurement_df, variable, critical_value
+                measurement_df, variable, critical_value, debug
             )
         )
     for variable, critical_value in variables_to_count_under_critical.items():
         measurement_df = (
             analysis.critical_streaks.count_critical_value_streak_less_than(
-                measurement_df, variable, critical_value
+                measurement_df, variable, critical_value, debug
             )
         )
     measurement_df = analysis.angle_between_head_and_tail_neighbor.find_angle_between(
-        measurement_df, coordinate_df
+        measurement_df, coordinate_df, debug
     )
 
     measurement_df.to_csv(measurement_csv_name, index=False)

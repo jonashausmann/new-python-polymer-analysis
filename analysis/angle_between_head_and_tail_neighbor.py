@@ -1,11 +1,14 @@
 import numpy as np
 
-from . import parameters
+# from . import parameters
 
 
-def find_angle_between(measurement_df, coordinate_df, critical_monomer=2):
+def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=False):
+    if debug:
+        print("Calculating angle between head and tail")
 
-    frames = parameters.nLoop / parameters.pInterval
+    #    frames = parameters.nLoop / parameters.pInterval
+    frames = 5000
     frame = 0
     df = measurement_df
 

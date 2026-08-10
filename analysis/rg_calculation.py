@@ -1,19 +1,16 @@
-from . import parameters
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-#nLoop = 100
+from . import parameters
 
-
-
-
-
+# nLoop = 100
 
 
+def calculate_radius_of_gyration(coordinate_df, measurement_df, debug=False):
+    if debug:
+        print("Calculating Rg")
 
-
-def calculate_radius_of_gyration(coordinate_df,measurement_df):
-    nLoop = parameters.nLoop/1000
+    nLoop = parameters.nLoop / 1000
     monomers = parameters.monomers
     calculated_rows = []
     frame = 0
@@ -26,22 +23,22 @@ def calculate_radius_of_gyration(coordinate_df,measurement_df):
         ycoords = df[df["frame"] == frame]["ycoord"]
         x_mean = np.mean(xcoords)
         y_mean = np.mean(ycoords)
-        for xcoord, ycoord in zip(xcoords,ycoords):
-            x_diff = xcoord-x_mean
-            x_sqr = x_diff*x_diff
-            y_diff = ycoord-y_mean
-            y_sqr = y_diff*y_diff
-            sum = sum + y_sqr+x_sqr
-        Rg_sqrd = sum/monomers
+        for xcoord, ycoord in zip(xcoords, ycoords):
+            x_diff = xcoord - x_mean
+            x_sqr = x_diff * x_diff
+            y_diff = ycoord - y_mean
+            y_sqr = y_diff * y_diff
+            sum = sum + y_sqr + x_sqr
+        Rg_sqrd = sum / monomers
         Rg = np.sqrt(Rg_sqrd)
         calculated_rows.append(Rg)
         frame = frame + 1
     calculated_df["Rg"] = calculated_rows
     return calculated_df
-    '''
+    """
     I'm leaving this here in case I need it for later
     Rg_mean = np.mean(calculated_df["Rg"])
-'''
+"""
 
 
-#calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
+# calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
