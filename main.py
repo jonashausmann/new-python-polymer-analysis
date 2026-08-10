@@ -152,7 +152,7 @@ def find_directories_and_run_for_all(data_directory):
             total_counts_over_critical.setdefault("run", []).append(run_number)
             total_counts_under_critical.setdefault("run", []).append(run_number)
 
-            # Counting how many times a variable goes over a critical value
+            # Counting how frames a variable is over a critical value
             for variable, critical_value in variables_to_count_over_critical.items():
                 new_variable, count = (
                     analysis.times_variable_goes_over_quantity.count_surpass_critical_value(
@@ -168,7 +168,9 @@ def find_directories_and_run_for_all(data_directory):
                         measurement_df, variable, critical_value
                     )
                 )
-            # Counting how many times a variable goes under a critical value
+
+
+            # Counting how frames a variable is under a critical value
             for variable, critical in variables_to_count_under_critical.items():
                 new_variable, count = (
                     analysis.times_variable_goes_over_quantity.count_under_critical_value(
