@@ -16,10 +16,10 @@ def find_direction_of_head(coordinate_df, measurement_df):
     direction_rows = []
     x_unit_vector = np.array([1, 0])
     while frame < nLoop:
-        x_1 = df[(df["frame"] == frame) & (df["monomernumber"] == 1)]["xcoord"]
-        y_1 = df[(df["frame"] == frame) & (df["monomernumber"] == 1)]["ycoord"]
-        x_2 = df[(df["frame"] == frame) & (df["monomernumber"] == 2)]["xcoord"]
-        y_2 = df[(df["frame"] == frame) & (df["monomernumber"] == 2)]["ycoord"]
+        x_1 = df[(df["frame"] == frame) & (df["monomernumber"] == 2)]["xcoord"]
+        y_1 = df[(df["frame"] == frame) & (df["monomernumber"] == 2)]["ycoord"]
+        x_2 = df[(df["frame"] == frame) & (df["monomernumber"] == 1)]["xcoord"]
+        y_2 = df[(df["frame"] == frame) & (df["monomernumber"] == 1)]["ycoord"]
         x = float(x_2.iloc[0]) - float(x_1.iloc[0])
         y = float(y_2.iloc[0]) - float(y_1.iloc[0])
         theta = np.arctan2(y, x)
