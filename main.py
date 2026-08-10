@@ -85,6 +85,9 @@ def main(simulation_directory):
                 measurement_df, variable, critical_value
             )
         )
+    measurement_df = analysis.angle_between_head_and_tail_neighbors.find_angle_between(
+        measurement_df, coordinate_df
+    )
 
     measurement_df.to_csv(measurement_csv_name, index=False)
 
@@ -169,7 +172,6 @@ def find_directories_and_run_for_all(data_directory):
                     )
                 )
 
-
             # Counting how frames a variable is under a critical value
             for variable, critical in variables_to_count_under_critical.items():
                 new_variable, count = (
@@ -188,9 +190,7 @@ def find_directories_and_run_for_all(data_directory):
 
             # the average streak and the longest streak
             for variable, critical_value in variables_to_count_over_critical.items():
-                streak_column = (
-                    variable + "_over_" + str(critical_value) + "_streak"
-                )
+                streak_column = variable + "_over_" + str(critical_value) + "_streak"
                 variable_mean = streak_column + "_mean"
                 variable_max = streak_column + "_max"
                 variable_dict.setdefault(variable_mean, []).append(
@@ -202,9 +202,7 @@ def find_directories_and_run_for_all(data_directory):
 
             # the average streak and the longest streak
             for variable, critical_value in variables_to_count_under_critical.items():
-                streak_column = (
-                    variable + "_under_" + str(critical_value) + "_streak"
-                )
+                streak_column = variable + "_under_" + str(critical_value) + "_streak"
                 variable_mean = streak_column + "_mean"
                 variable_max = streak_column + "_max"
                 variable_dict.setdefault(variable_mean, []).append(

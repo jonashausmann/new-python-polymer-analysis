@@ -19,8 +19,7 @@ def count_surpass_critical_value(value, critical_point, measurements_csv):
 
 def count_under_critical_value(value, critical_point, measurements_csv):
     measurement_df = measurements_csv#pd.read_csv(measurements_csv)
-    amount_of_times = (measurement_df[value] <= critical_point).sum()
-    value_count_string = value + "_times_under_" + str(critical_point)
+    amount_of_times = (measurement_df[value] <= critical_point).sum() value_count_string = value + "_times_under_" + str(critical_point)
     return value_count_string, amount_of_times
 
 

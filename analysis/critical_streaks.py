@@ -1,7 +1,4 @@
 import numpy as np
-import pandas as pd
-
-from . import parameters
 
 
 def _consecutive_streak(condition):
