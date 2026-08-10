@@ -69,7 +69,7 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2):
             max_neighbor_diff.append(head_degrees - neigh_degrees)
         else:
             max_neighbor_diff.append(np.nan)
-    frame = frame + 1
+        frame = frame + 1
 
     df["head_minus_max_neighbor_monomer_angle_difference"] = max_neighbor_diff
     df["head_and_tail_angle_diff"] = tail_head_angle_diff_row
