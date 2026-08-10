@@ -7,6 +7,7 @@ from . import (
     head_nearest_neighbors,
     parameters,
     rg_calculation,
+    rows_for_crit_csv,
     times_variable_goes_over_quantity,
     turning_number,
     winding_number,

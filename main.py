@@ -29,10 +29,26 @@ variables_to_count_over_critical = {
     "density": 2,
 }
 variables_to_count_under_critical = {
-    "Rg": 2.7,
+    "Rg": 6,
     "winding_number": -3.4,
     "turning_number": -3.7,
 }
+values_for_crit_quant = [
+    "Rg",
+    "degrees",
+    "mean_curv",
+    "max_curv",
+    "min_curv",
+    "max_curv_monomer",
+    "min_curv_monomer",
+    "turning_number",
+    "winding_number",
+    "density",
+    "neighbor_count",
+    "max_neighbor_monomer",
+    "tail_direction",
+    "head_and_tail_angle_diff",
+]
 
 
 def main(simulation_directory):
@@ -144,6 +160,8 @@ def find_directories_and_run_for_all(data_directory):
         total_counts_under_critical = {}
         unique_under_streak_dict = {}
         unique_over_streak_dict = {}
+
+        rg_crit_dict = {}
         for subsubdir in sort_subsubdirs:
             print(f"Starting average calculations for run {run_number}")
             csv_folder = str(subsubdir) + "/csv_files/"
@@ -160,6 +178,7 @@ def find_directories_and_run_for_all(data_directory):
             total_counts_under_critical.setdefault("run", []).append(run_number)
             unique_over_streak_dict.setdefault("run", []).append(run_number)
             unique_under_streak_dict.setdefault("run", []).append(run_number)
+            rg_crit_dict.setdefault("run", []).append(run_number)
 
             # Counting how frames a variable is over a critical value
             for variable, critical_value in variables_to_count_over_critical.items():
@@ -205,6 +224,15 @@ def find_directories_and_run_for_all(data_directory):
                 unique_under_streak_dict.setdefault(
                     unique_under_streak_name, []
                 ).append(unique_under_streak)
+
+            # for a given critical value, what quantifications are within it?
+            rg_crit_dict = analysis.rows_for_crit_csv.create_crit_under_row(
+                measurement_df,
+                "Rg",
+                variables_to_count_under_critical["Rg"],
+                values_for_crit_quant,
+                rg_crit_dict,
+            )
 
             # the average streak and the longest streak
             for variable, critical_value in variables_to_count_over_critical.items():
@@ -334,6 +362,7 @@ def find_directories_and_run_for_all(data_directory):
         unique_over_streaks_df = pd.DataFrame(unique_over_streak_dict)
         counts_over_df = pd.DataFrame(total_counts_over_critical)
         counts_under_df = pd.DataFrame(total_counts_under_critical)
+        crit_rg_average_df = pd.DataFrame(rg_crit_dict)
         average_df = pd.DataFrame(variable_dict)
         average_df = pd.merge(average_df, counts_over_df, on="run", how="right")
         average_df = pd.merge(average_df, counts_under_df, on="run", how="right")
@@ -341,11 +370,13 @@ def find_directories_and_run_for_all(data_directory):
             average_df, unique_under_streaks_df, on="run", how="right"
         )
         average_df = pd.merge(average_df, unique_over_streaks_df, on="run", how="right")
+        average_df = pd.merge(average_df, crit_rg_average_df, on="run", how="right")
         run_average_directory = str(subdir) + "/Averaged_Runs/"
         os.makedirs(run_average_directory, exist_ok=True)
         run_avg_resolved = Path(run_average_directory).resolve()
         average_csv_name = str(run_avg_resolved) + "/average.csv"
         average_df.to_csv(average_csv_name, index=False)
+
         finished_parameter_directories = finished_parameter_directories + 1
         print(f"Progress :{finished_parameter_directories}/{total_dirs}")
 
