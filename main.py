@@ -88,7 +88,7 @@ def main(simulation_directory):
             )
         )
     measurement_df = analysis.angle_between_head_and_tail_neighbor.find_angle_between(
-        measurement_df, coordinate_df, debug
+        measurement_df, coordinate_df, 2, debug
     )
 
     measurement_df.to_csv(measurement_csv_name, index=False)
