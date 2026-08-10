@@ -18,16 +18,16 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=
     while frame < frames:
         head_degrees = df[(df["frames"] == frame)]["degrees"]
         x_1_tail = coordinate_df[
-            (coordinate_df["frames"] == frame & (coordinate_df["monomernumber"] == 50))
+            (coordinate_df["frame"] == frame & (coordinate_df["monomernumber"] == 50))
         ]["xcoord"]
         y_1_tail = coordinate_df[
-            (coordinate_df["frames"] == frame & (coordinate_df["monomernumber"] == 50))
+            (coordinate_df["frame"] == frame & (coordinate_df["monomernumber"] == 50))
         ]["ycoord"]
         x_2_tail = coordinate_df[
-            (coordinate_df["frames"] == frame & (coordinate_df["monomernumber"] == 49))
+            (coordinate_df["frame"] == frame & (coordinate_df["monomernumber"] == 49))
         ]["xcoord"]
         y_2_tail = coordinate_df[
-            (coordinate_df["frames"] == frame & (coordinate_df["monomernumber"] == 49))
+            (coordinate_df["frame"] == frame & (coordinate_df["monomernumber"] == 49))
         ]["ycoord"]
 
         x = float(x_2_tail.iloc[0]) - float(x_1_tail.iloc[0])
@@ -39,29 +39,32 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=
         tail_head_angle_diff_row.append(head_degrees - tail_degrees)
 
         # Not correct, return to later
-        max_neighbor_mon = int(df[(df["frames" == frame])]["max_neighbor_monomer"])
+
+        max_neighbor_mon = int(
+            df.loc[df["frames"] == frame, "max_neighbor_monomer"].iloc[0]
+        )
         if max_neighbor_mon > critical_monomer:
             x_1_neigh = coordinate_df[
                 (
-                    coordinate_df["frames"]
+                    coordinate_df["frame"]
                     == frame & (coordinate_df["monomernumber"] == max_neighbor_mon)
                 )
             ]["xcoord"]
             y_1_neigh = coordinate_df[
                 (
-                    coordinate_df["frames"]
+                    coordinate_df["frame"]
                     == frame & (coordinate_df["monomernumber"] == max_neighbor_mon)
                 )
             ]["ycoord"]
             x_2_neigh = coordinate_df[
                 (
-                    coordinate_df["frames"]
+                    coordinate_df["frame"]
                     == frame & (coordinate_df["monomernumber"] == max_neighbor_mon - 1)
                 )
             ]["xcoord"]
             y_2_neigh = coordinate_df[
                 (
-                    coordinate_df["frames"]
+                    coordinate_df["frame"]
                     == frame & (coordinate_df["monomernumber"] == max_neighbor_mon - 1)
                 )
             ]["ycoord"]
