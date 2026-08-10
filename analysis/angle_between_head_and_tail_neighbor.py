@@ -36,7 +36,7 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=
         tail_theta = np.arctan2(y, x)
         tail_degrees = (tail_theta * 180) / np.pi
         tail_rows.append(tail_degrees)
-        if debug:
+        if debugExtraTrue:
             print(
                 f"x_1: {x_1_tail}, y_1: {y_1_tail}, x_2_tail: {x_2_tail}, y_2:{y_2_tail} x: {x}, y: {y}, theta: {tail_theta}, head: {head_degrees}, tail: {tail_degrees} "
             )

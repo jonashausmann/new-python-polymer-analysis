@@ -76,13 +76,13 @@ def main(simulation_directory):
     # per-frame streak signal survives (previously it was computed only in the
     # averaging step and discarded). Runs inside each parallel worker.
     for variable, critical_value in variables_to_count_over_critical.items():
-        measurement_df = (
+        measurement_df, discard = (
             analysis.critical_streaks.count_critical_value_streak_greater_than(
                 measurement_df, variable, critical_value, debug
             )
         )
     for variable, critical_value in variables_to_count_under_critical.items():
-        measurement_df = (
+        measurement_df, discard = (
             analysis.critical_streaks.count_critical_value_streak_less_than(
                 measurement_df, variable, critical_value, debug
             )
@@ -142,6 +142,8 @@ def find_directories_and_run_for_all(data_directory):
         variable_dict = {}
         total_counts_over_critical = {}
         total_counts_under_critical = {}
+        unique_under_streak_dict = {}
+        unique_over_streak_dict = {}
         for subsubdir in sort_subsubdirs:
             print(f"Starting average calculations for run {run_number}")
             csv_folder = str(subsubdir) + "/csv_files/"
@@ -156,6 +158,8 @@ def find_directories_and_run_for_all(data_directory):
             variable_dict.setdefault("run", []).append(run_number)
             total_counts_over_critical.setdefault("run", []).append(run_number)
             total_counts_under_critical.setdefault("run", []).append(run_number)
+            unique_over_streak_dict.setdefault("run", []).append(run_number)
+            unique_under_streak_dict.setdefault("run", []).append(run_number)
 
             # Counting how frames a variable is over a critical value
             for variable, critical_value in variables_to_count_over_critical.items():
@@ -168,10 +172,16 @@ def find_directories_and_run_for_all(data_directory):
                     int(count)
                 )
 
-                measurement_df = (
+                measurement_df, unique_over_streak = (
                     analysis.critical_streaks.count_critical_value_streak_greater_than(
                         measurement_df, variable, critical_value
                     )
+                )
+                unique_over_streak_name = (
+                    variable + "_over_" + str(critical_value) + "_unique_streaks"
+                )
+                unique_over_streak_dict.setdefault(unique_over_streak_name, []).append(
+                    unique_over_streak
                 )
 
             # Counting how frames a variable is under a critical value
@@ -184,11 +194,17 @@ def find_directories_and_run_for_all(data_directory):
                 total_counts_under_critical.setdefault(new_variable, []).append(
                     int(count)
                 )
-                measurement_df = (
+                measurement_df, unique_under_streak = (
                     analysis.critical_streaks.count_critical_value_streak_less_than(
                         measurement_df, variable, critical
                     )
                 )
+                unique_under_streak_name = (
+                    variable + "_under_" + str(critical_value) + "_unique_streaks"
+                )
+                unique_under_streak_dict.setdefault(
+                    unique_under_streak_name, []
+                ).append(unique_under_streak)
 
             # the average streak and the longest streak
             for variable, critical_value in variables_to_count_over_critical.items():
@@ -314,11 +330,17 @@ def find_directories_and_run_for_all(data_directory):
             print(f"Skipping average for {subdir}, no runs produced measurements")
             continue
 
+        unique_under_streaks_df = pd.DataFrame(unique_under_streak_dict)
+        unique_over_streaks_df = pd.DataFrame(unique_over_streak_dict)
         counts_over_df = pd.DataFrame(total_counts_over_critical)
         counts_under_df = pd.DataFrame(total_counts_under_critical)
         average_df = pd.DataFrame(variable_dict)
         average_df = pd.merge(average_df, counts_over_df, on="run", how="right")
         average_df = pd.merge(average_df, counts_under_df, on="run", how="right")
+        average_df = pd.merge(
+            average_df, unique_under_streaks_df, on="run", how="right"
+        )
+        average_df = pd.merge(average_df, unique_over_streaks_df, on="run", how="right")
         run_average_directory = str(subdir) + "/Averaged_Runs/"
         os.makedirs(run_average_directory, exist_ok=True)
         run_avg_resolved = Path(run_average_directory).resolve()

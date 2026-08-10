@@ -20,11 +20,9 @@ def count_critical_value_streak_greater_than(
     streak_name = critical_variable + "_over_" + str(critical_value) + "_streak"
     df[streak_name] = _consecutive_streak(condition)
 
-    # How many different streaks are there?
-    condition = df[streak_name].to_numpy() == 1
-    streak_number_name = streak_name + "_amount_of_different_streaks"
-    df[streak_number_name] = _consecutive_streak(condition)
-    return df
+    unique_times = (measurement_df[streak_name] == 1).sum()
+
+    return df, unique_times
 
 
 def count_critical_value_streak_less_than(
@@ -38,8 +36,6 @@ def count_critical_value_streak_less_than(
     streak_name = critical_variable + "_under_" + str(critical_value) + "_streak"
     df[streak_name] = _consecutive_streak(condition)
 
-    # How many different streaks are there?
-    condition = df[streak_name].to_numpy() == 1
-    streak_number_name = streak_name + "_amount_of_different_streaks"
-    df[streak_number_name] = _consecutive_streak(condition)
-    return df
+    unique_times = (measurement_df[streak_name] == 1).sum()
+
+    return df, unique_times
