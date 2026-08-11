@@ -1,9 +1,9 @@
 monomers = 50.0
 extension = 20000.0
-bending = 300.0
+bending = 5.0
 diffusion = 1.0
 temperature = 1.0
-activity = 80.0
+activity = 10.0
 timestep = 1e-05
 nLoop = 5000000.0
 pInterval = 1000.0

@@ -107,6 +107,10 @@ def main(simulation_directory):
         measurement_df, coordinate_df, 2, debug
     )
 
+    measurement_df = analysis.all_neighbors.average_filament_neighbors(
+        coordinate_df, measurement_df, debug
+    )
+
     measurement_df.to_csv(measurement_csv_name, index=False)
 
 
@@ -154,6 +158,8 @@ def find_directories_and_run_for_all(data_directory):
             "turning_number",
             "winding_number",
             "density",
+            "average_neighbors",
+            "std_neighbors",
         ]
         variable_dict = {}
         total_counts_over_critical = {}
@@ -350,6 +356,7 @@ def find_directories_and_run_for_all(data_directory):
                 if dir_name_match
                 else np.degrees(parameters.ChiralityAngle)
             )
+
             run_number = run_number + 1
         print(total_counts_over_critical)
         print(total_counts_under_critical)
