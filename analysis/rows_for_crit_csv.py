@@ -1,7 +1,3 @@
-import numpy as np
-import pandas as pd
-
-
 def create_crit_over_row(
     measurement_df, crit_variable, crit_value, reg_values, row_dict
 ):

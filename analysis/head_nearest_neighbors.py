@@ -46,9 +46,3 @@ def count_nearest_neighbors(coordinate_df, measurement_df, debug=False):
 
     measurement_df = pd.merge(measurement_df, neighbor_df, on="frames", how="right")
     return measurement_df
-
-
-# count_nearest_neighbors(
-#     "../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0.csv",
-#     "../data/F10_K5_theta0.0/RUN_0001/csv_files/F10.0_K5.0_theta0.0_measurements.csv",
-# )

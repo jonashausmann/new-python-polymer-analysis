@@ -1,9 +1,6 @@
 import numpy as np
-import pandas as pd
 
 from . import parameters
-
-# nLoop = 100
 
 
 def calculate_radius_of_gyration(coordinate_df, measurement_df, debug=False):
@@ -18,7 +15,6 @@ def calculate_radius_of_gyration(coordinate_df, measurement_df, debug=False):
     df = coordinate_df
     while frame < nLoop:
         sum = 0
-        monomer = 0
         xcoords = df[df["frame"] == frame]["xcoord"]
         ycoords = df[df["frame"] == frame]["ycoord"]
         x_mean = np.mean(xcoords)
@@ -35,10 +31,3 @@ def calculate_radius_of_gyration(coordinate_df, measurement_df, debug=False):
         frame = frame + 1
     calculated_df["Rg"] = calculated_rows
     return calculated_df
-    """
-    I'm leaving this here in case I need it for later
-    Rg_mean = np.mean(calculated_df["Rg"])
-"""
-
-
-# calculate_radius_of_gyration("./csv_files/F5.0_K0.5_theta0.0.csv", "./calculated_data/real_polymer_test.csv")
