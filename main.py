@@ -49,6 +49,28 @@ values_for_crit_quant = [
     "tail_direction",
     "head_and_tail_angle_diff",
 ]
+variables_to_average_min_max = [
+    "Rg",
+    "turning_number",
+    "winding_number",
+    "density",
+    "average_neighbors",
+    "std_neighbors",
+    "Rg_frame_difference",
+    "turning_number_frame_difference",
+    "winding_number_frame_difference",
+    "density_frame_difference",
+    "average_neighbors_frame_difference",
+    "std_neighbors_frame_difference",
+]
+derivative_variables = [
+    "Rg",
+    "turning_number",
+    "winding_number",
+    "density",
+    "average_neighbors",
+    "std_neighbors",
+]
 
 
 def main(simulation_directory):
@@ -111,6 +133,10 @@ def main(simulation_directory):
         coordinate_df, measurement_df, debug
     )
 
+    measurement_df = analysis.derivatives.calculate_derivatives(
+        derivative_variables, measurement_df, debug
+    )
+
     measurement_df.to_csv(measurement_csv_name, index=False)
 
 
@@ -153,14 +179,6 @@ def find_directories_and_run_for_all(data_directory):
 
         run_number = 1
         dir_name_match = DIR_NAME_PATTERN.match(Path(subdir).name)
-        variables_to_average_min_max = [
-            "Rg",
-            "turning_number",
-            "winding_number",
-            "density",
-            "average_neighbors",
-            "std_neighbors",
-        ]
         variable_dict = {}
         total_counts_over_critical = {}
         total_counts_under_critical = {}

@@ -4,6 +4,7 @@ from . import (
     critical_streaks,
     curvature_mean_max,
     density,
+    derivatives,
     direction_of_head_bead,
     head_nearest_neighbors,
     parameters,
