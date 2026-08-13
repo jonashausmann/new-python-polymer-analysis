@@ -9,8 +9,10 @@ from visualize_data import frame_graph
 
 
 def its_graphing_time():
+
     resolved_directory = Path("./data").resolve()
     subdirs = [p for p in resolved_directory.iterdir() if p.is_dir()]
+    print(f"")
 
     for subdir in subdirs:
         resolved_subdir = Path(subdir).resolve()

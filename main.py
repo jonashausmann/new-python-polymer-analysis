@@ -110,9 +110,6 @@ def main(simulation_directory):
         coordinate_df, measurement_df, debug
     )
 
-    # Per-frame critical-value streak columns, persisted with each run so the
-    # per-frame streak signal survives (previously it was computed only in the
-    # averaging step and discarded). Runs inside each parallel worker.
     for variable, critical_value in variables_to_count_over_critical.items():
         measurement_df, discard = (
             analysis.critical_streaks.count_critical_value_streak_greater_than(
@@ -135,6 +132,10 @@ def main(simulation_directory):
 
     measurement_df = analysis.derivatives.calculate_derivatives(
         derivative_variables, measurement_df, debug
+    )
+
+    measurement_df = analysis.max_phi_diff.calculate_max_phi_diff(
+        coordinate_df, measurement_df
     )
 
     measurement_df.to_csv(measurement_csv_name, index=False)

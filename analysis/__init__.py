@@ -7,6 +7,7 @@ from . import (
     derivatives,
     direction_of_head_bead,
     head_nearest_neighbors,
+    max_phi_diff,
     parameters,
     rg_calculation,
     rows_for_crit_csv,
