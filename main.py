@@ -154,6 +154,10 @@ def main(simulation_directory):
         coordinate_df, measurement_df
     )
 
+    measurement_df = analysis.inverse_average_space_between_monomers.calculate_inverse_average_spacing(
+        coordinate_df, measurement_df
+    )
+
     measurement_df.to_csv(measurement_csv_name, index=False)
 
 

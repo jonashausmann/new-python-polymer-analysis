@@ -7,6 +7,7 @@ from . import (
     derivatives,
     direction_of_head_bead,
     head_nearest_neighbors,
+    inverse_average_space_between_monomers,
     max_phi_diff,
     parameters,
     rg_calculation,
