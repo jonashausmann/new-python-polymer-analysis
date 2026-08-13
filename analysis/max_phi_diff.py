@@ -27,7 +27,7 @@ def calculate_max_phi_diff(coordinate_df, measurement_df, debug=False):
     new_df = pd.DataFrame(
         {
             "frames": np.arange(frames),
-            "max_phi_diff": np.round(diffreence_between_bond_angles.max(axis=1), 5),
+            "max_angle_diff": np.round(diffreence_between_bond_angles.max(axis=1), 5),
         }
     )
 

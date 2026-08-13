@@ -10,7 +10,10 @@ import pandas as pd
 import analysis
 from analysis import parameters
 
-debug = True
+debug = False
+neighbors = False
+tail = False
+density = False
 
 data_directory = "./data/"
 # /Volumes/project_files/ucmerced/2026/monika_simulations/
@@ -26,8 +29,10 @@ variables_to_count_over_critical = {
     "max_curv": 119,
     "turning_number": 3.7,
     "winding_number": 3.4,
-    "density": 2,
 }
+"""
+    "density": 2,
+"""
 variables_to_count_under_critical = {
     "Rg": 6,
     "winding_number": -3.4,
@@ -43,34 +48,41 @@ values_for_crit_quant = [
     "min_curv_monomer",
     "turning_number",
     "winding_number",
+]
+"""
     "density",
     "neighbor_count",
     "max_neighbor_monomer",
     "tail_direction",
     "head_and_tail_angle_diff",
-]
+"""
 variables_to_average_min_max = [
     "Rg",
     "turning_number",
     "winding_number",
-    "density",
-    "average_neighbors",
-    "std_neighbors",
     "Rg_frame_difference",
     "turning_number_frame_difference",
     "winding_number_frame_difference",
+]
+"""
+    "density",
+    "average_neighbors",
+    "std_neighbors",
     "density_frame_difference",
     "average_neighbors_frame_difference",
     "std_neighbors_frame_difference",
-]
+
+"""
 derivative_variables = [
     "Rg",
     "turning_number",
     "winding_number",
+]
+"""
     "density",
     "average_neighbors",
     "std_neighbors",
-]
+"""
 
 
 def main(simulation_directory):
@@ -105,10 +117,15 @@ def main(simulation_directory):
     measurement_df = analysis.winding_number.winding_number_around_head(
         coordinate_df, measurement_df, debug
     )
-    measurement_df = analysis.density.compute_density(measurement_df, debug)
-    measurement_df = analysis.head_nearest_neighbors.count_nearest_neighbors(
-        coordinate_df, measurement_df, debug
-    )
+    if density:
+        measurement_df = analysis.density.compute_density(measurement_df, debug)
+    if neighbors:
+        measurement_df = analysis.head_nearest_neighbors.count_nearest_neighbors(
+            coordinate_df, measurement_df, debug
+        )
+        measurement_df = analysis.all_neighbors.average_filament_neighbors(
+            coordinate_df, measurement_df, debug
+        )
 
     for variable, critical_value in variables_to_count_over_critical.items():
         measurement_df, discard = (
@@ -122,13 +139,12 @@ def main(simulation_directory):
                 measurement_df, variable, critical_value, debug
             )
         )
-    measurement_df = analysis.angle_between_head_and_tail_neighbor.find_angle_between(
-        measurement_df, coordinate_df, 2, debug
-    )
-
-    measurement_df = analysis.all_neighbors.average_filament_neighbors(
-        coordinate_df, measurement_df, debug
-    )
+    if tail:
+        measurement_df = (
+            analysis.angle_between_head_and_tail_neighbor.find_angle_between(
+                measurement_df, coordinate_df, 2, debug
+            )
+        )
 
     measurement_df = analysis.derivatives.calculate_derivatives(
         derivative_variables, measurement_df, debug
@@ -314,50 +330,58 @@ def find_directories_and_run_for_all(data_directory):
                 np.min(measurement_df["min_curv"])
             )
 
-            variable_dict.setdefault("mean_neighbor_count", []).append(
-                np.mean(measurement_df["neighbor_count"])
-            )
-            variable_dict.setdefault("max_neighbor_count", []).append(
-                np.max(measurement_df["neighbor_count"])
-            )
+            if neighbors:
+                variable_dict.setdefault("mean_neighbor_count", []).append(
+                    np.mean(measurement_df["neighbor_count"])
+                )
+                variable_dict.setdefault("max_neighbor_count", []).append(
+                    np.max(measurement_df["neighbor_count"])
+                )
 
-            def split_monomer_and_distance(string_list):
-                if string_list == "[]":
-                    return [], []
-                lst = ast.literal_eval(string_list)
-                monomers = lst[0::2]
-                distances = lst[1::3]
-                return monomers, distances
+                def split_monomer_and_distance(string_list):
+                    if string_list == "[]":
+                        return [], []
+                    lst = ast.literal_eval(string_list)
+                    monomers = lst[0::2]
+                    distances = lst[1::3]
+                    return monomers, distances
 
-            measurement_df["nearest_monomers"], measurement_df["monomer_distances"] = (
-                zip(
+                (
+                    measurement_df["nearest_monomers"],
+                    measurement_df["monomer_distances"],
+                ) = zip(
                     *measurement_df["neighbor_monomor_neighbor_distance"].apply(
                         split_monomer_and_distance
                     )
                 )
-            )
 
-            all_nearest_monomers = [
-                x for sublist in measurement_df["nearest_monomers"] for x in sublist
-            ]
-            all_monomer_distances = [
-                x for sublist in measurement_df["monomer_distances"] for x in sublist
-            ]
+                all_nearest_monomers = [
+                    x for sublist in measurement_df["nearest_monomers"] for x in sublist
+                ]
+                all_monomer_distances = [
+                    x
+                    for sublist in measurement_df["monomer_distances"]
+                    for x in sublist
+                ]
 
-            # mean_monomer = np.mean(all_nearest_monomers) if all_nearest_monomers else np.nan
-            mean_distance = (
-                np.mean(all_monomer_distances) if all_monomer_distances else np.nan
-            )
-            max_monomer = (
-                np.max(all_nearest_monomers) if all_nearest_monomers else np.nan
-            )
-            min_distance = (
-                np.min(all_monomer_distances) if all_monomer_distances else np.nan
-            )
+                # mean_monomer = np.mean(all_nearest_monomers) if all_nearest_monomers else np.nan
+                mean_distance = (
+                    np.mean(all_monomer_distances) if all_monomer_distances else np.nan
+                )
+                max_monomer = (
+                    np.max(all_nearest_monomers) if all_nearest_monomers else np.nan
+                )
+                min_distance = (
+                    np.min(all_monomer_distances) if all_monomer_distances else np.nan
+                )
 
-            variable_dict.setdefault("max_neighbor_monomer", []).append(max_monomer)
-            variable_dict.setdefault("mean_neighbor_distance", []).append(mean_distance)
-            variable_dict.setdefault("min_neighbor_distance", []).append(min_distance)
+                variable_dict.setdefault("max_neighbor_monomer", []).append(max_monomer)
+                variable_dict.setdefault("mean_neighbor_distance", []).append(
+                    mean_distance
+                )
+                variable_dict.setdefault("min_neighbor_distance", []).append(
+                    min_distance
+                )
 
             variable_dict.setdefault("nLoop", []).append(parameters.nLoop / 1000)
             variable_dict.setdefault("bending", []).append(
@@ -377,8 +401,9 @@ def find_directories_and_run_for_all(data_directory):
             )
 
             run_number = run_number + 1
-        print(total_counts_over_critical)
-        print(total_counts_under_critical)
+        if debug:
+            print(total_counts_over_critical)
+            print(total_counts_under_critical)
 
         if len(variable_dict) == 0:
             print(f"Skipping average for {subdir}, no runs produced measurements")
