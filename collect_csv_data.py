@@ -18,7 +18,9 @@ from datetime import date
 from glob import glob
 
 # ── Configuration ──────────────────────────────────────────────────────────────
-DEST_ROOT   = "."           # Parent directory where csv_data_DATE_N/ is created
+DEST_ROOT   = "/Volumes/project_files/ucmerced/csv_dumps"           
+# Parent directory where csv_data_DATE_N/ is created
+
 SOURCE_ROOT = "./data"      # Directory containing F*_K*_theta* parameter folders
 HEAT_MAP_DIR = "./heat_map" # Directory containing heat_map figures/averages
 # ───────────────────────────────────────────────────────────────────────────────

@@ -11,8 +11,8 @@ import analysis
 from analysis import parameters
 
 debug = False
-neighbors = False
-tail = False
+neighbors = True
+tail = True
 density = False
 
 data_directory = "./data/"
@@ -77,11 +77,12 @@ derivative_variables = [
     "Rg",
     "turning_number",
     "winding_number",
+    "average_neighbors",
+    "std_neighbors",
+    "max_phi_diff",
 ]
 """
     "density",
-    "average_neighbors",
-    "std_neighbors",
 """
 
 
