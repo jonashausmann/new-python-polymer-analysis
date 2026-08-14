@@ -82,9 +82,9 @@ derivative_variables = [
     "winding_number",
     "average_neighbors",
     "std_neighbors",
-    "max_phi_diff",
 ]
 """
+    "max_phi_diff",
     "density",
 """
 
