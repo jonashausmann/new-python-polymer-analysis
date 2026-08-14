@@ -1,6 +1,11 @@
 import os
 from pathlib import Path
 
+import matplotlib
+# Non-interactive backend: figures are only saved to disk, and this module
+# runs inside ProcessPoolExecutor workers (create_graphs.py), where GUI
+# backends (e.g. macOS's default) are unsafe to use in forked processes.
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -27,7 +32,7 @@ def create_frame_graph(
     parent_directory = measurement_csv_path.parent
     parent_parent_directory = parent_directory.parent
 
-    figure_folder_path = str(parent_parent_directory) + "/graphs/variable_vs_frames/"
+    figure_folder_path = str(parent_parent_directory) + "/figures/variable_vs_frames/"
     if os.path.exists(figure_folder_path) == False:
         os.makedirs(figure_folder_path)
 
