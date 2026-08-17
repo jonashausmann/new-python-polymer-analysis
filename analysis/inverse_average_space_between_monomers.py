@@ -24,10 +24,9 @@ def calculate_inverse_average_spacing(coordinate_df, measurement_df):
     test_matrix += (ys[:, :, None] - ys[:, None, :]) ** 2
     squared_distances = test_matrix - interm_matrix
 
-    distances_we_want_matrix = squared_distances.sum(axis=2)
+    distances_we_want_matrix = np.sqrt(squared_distances).sum(axis=2)
     sum_of_all_distances = distances_we_want_matrix.sum(axis=1)
-    print(sum_of_all_distances)
-    inv_average_of_all_distances = 1 / (sum_of_all_distances / monomers)
+    inv_average_of_all_distances = 1 / (sum_of_all_distances / (monomers - 1))
 
     inv_avg_df = pd.DataFrame(
         {"frames": np.arange(frames), "inv_avg_df": inv_average_of_all_distances}

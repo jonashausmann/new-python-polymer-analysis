@@ -17,7 +17,7 @@ def count_nearest_neighbors(coordinate_df, measurement_df, debug=False):
     head_bead = coords[:, 0:1, :]
     vector_from_head_to_bead = coords[:, 1:, :] - head_bead
     distances = np.linalg.norm(vector_from_head_to_bead, axis=2)
-    within_one = distances <= 1
+    within_one = distances <= 2
 
     neighbor_count = within_one.sum(axis=1)
 
