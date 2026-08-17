@@ -17,7 +17,7 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=
     tail_head_angle_diff_row = []
     max_neighbor_diff = []
     while frame < frames:
-        head_degrees = df[(df["frames"] == frame)]["degrees"].iloc[0]
+        head_radians = df[(df["frames"] == frame)]["radians"].iloc[0]
         x_1_tail = coordinate_df[
             (coordinate_df["frame"] == frame) & (coordinate_df["monomernumber"] == 50)
         ]["xcoord"]
@@ -34,14 +34,14 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=
         x = float(x_2_tail.iloc[0]) - float(x_1_tail.iloc[0])
         y = float(y_2_tail.iloc[0]) - float(y_1_tail.iloc[0])
         tail_theta = np.arctan2(y, x)
-        tail_degrees = (tail_theta * 180) / np.pi
-        tail_rows.append(tail_degrees)
+        tail_radians = tail_theta
+        tail_rows.append(tail_radians)
         if debugExtraTrue:
             print(
-                f"x_1: {x_1_tail}, y_1: {y_1_tail}, x_2_tail: {x_2_tail}, y_2:{y_2_tail} x: {x}, y: {y}, theta: {tail_theta}, head: {head_degrees}, tail: {tail_degrees} "
+                f"x_1: {x_1_tail}, y_1: {y_1_tail}, x_2_tail: {x_2_tail}, y_2:{y_2_tail} x: {x}, y: {y}, theta: {tail_theta}, head: {head_radians}, tail: {tail_radians} "
             )
 
-        tail_head_angle_diff_row.append(head_degrees - tail_degrees)
+        tail_head_angle_diff_row.append(head_radians - tail_radians)
 
         max_neighbor_mon = int(
             df.loc[df["frames"] == frame, "max_neighbor_monomer"].iloc[0]
@@ -70,11 +70,11 @@ def find_angle_between(measurement_df, coordinate_df, critical_monomer=2, debug=
             x = float(x_2_neigh.iloc[0]) - float(x_1_neigh.iloc[0])
             y = float(y_2_neigh.iloc[0]) - float(y_1_neigh.iloc[0])
             neigh_theta = np.arctan2(y, x)
-            neigh_degrees = (neigh_theta * 180) / np.pi
-            degree_diff = head_degrees - neigh_degrees
-            max_neighbor_diff.append(degree_diff)
+            neigh_radians = neigh_theta
+            radian_diff = head_radians - neigh_radians
+            max_neighbor_diff.append(radian_diff)
             if debugExtraTrue:
-                print(f"max diff: {degree_diff}, max mon: {max_neighbor_mon}")
+                print(f"max diff: {radian_diff}, max mon: {max_neighbor_mon}")
             if False:
                 print(f"Max monomer difference list:{max_neighbor_diff}")
         elif max_neighbor_mon <= 2:

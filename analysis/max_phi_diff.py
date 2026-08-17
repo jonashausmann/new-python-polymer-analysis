@@ -18,11 +18,11 @@ def calculate_max_phi_diff(coordinate_df, measurement_df, debug=False):
 
     bead_vectors = np.diff(coords, axis=1)
 
-    phi = np.degrees(np.arctan2(bead_vectors[..., 1], bead_vectors[..., 0]))
+    phi = np.arctan2(bead_vectors[..., 1], bead_vectors[..., 0])
     diffreence_between_bond_angles = np.diff(phi, axis=1)
     diffreence_between_bond_angles = (
-        diffreence_between_bond_angles + 180.0
-    ) % 360 - 180
+        diffreence_between_bond_angles + np.pi
+    ) % (2 * np.pi) - np.pi
 
     new_df = pd.DataFrame(
         {

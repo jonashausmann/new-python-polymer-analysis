@@ -33,28 +33,28 @@ def find_direction_of_head(coordinate_df, measurement_df, debug=False):
         head_bead_vector_unit = head_bead_vector / head_bead_vector_magnitude
 """
         # based on cos^2 + sin^2 = 1, if doing cos = sqrt(1-sin^2)
-        degrees = (theta * 180) / np.pi
+        radians = theta
         """
-        if degrees < 0:
-            if degrees >= -180 and degrees <= -90:
-                degrees = (degrees + 90)*-1
-            elif degrees > -90 and degrees < 0:
-                degrees = degrees - 90
-        elif degrees > 0:
-            if degrees > 0 and degrees <= 90:
-                degrees = -90 + degrees
-            elif degrees <= 180 and degrees > 90:
-                degrees = 270 - degrees
-        elif degrees == 0:
-            degrees = -90
+        if radians < 0:
+            if radians >= -np.pi and radians <= -np.pi/2:
+                radians = (radians + np.pi/2)*-1
+            elif radians > -np.pi/2 and radians < 0:
+                radians = radians - np.pi/2
+        elif radians > 0:
+            if radians > 0 and radians <= np.pi/2:
+                radians = -np.pi/2 + radians
+            elif radians <= np.pi and radians > np.pi/2:
+                radians = 3*np.pi/2 - radians
+        elif radians == 0:
+            radians = -np.pi/2
            """
 
-        my_weird_calculated_direction_rows.append(degrees)
-        direction_rows.append((theta * 180) / np.pi)
+        my_weird_calculated_direction_rows.append(radians)
+        direction_rows.append(theta)
         frame = frame + 1
 
-    # calculated_data_df["degrees"] = direction_rows
-    calculated_data_df["degrees"] = my_weird_calculated_direction_rows
+    # calculated_data_df["radians"] = direction_rows
+    calculated_data_df["radians"] = my_weird_calculated_direction_rows
 
     return calculated_data_df
 

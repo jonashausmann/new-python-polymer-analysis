@@ -26,7 +26,7 @@ def calculate_curvature(coordinate_df, measurement_df, debug=False):
 
     dot_product = np.clip(np.sum(bond_1_unit * bond_2_unit, axis=2), -1.0, 1.0)
 
-    theta = np.degrees(np.arccos(dot_product))
+    theta = np.arccos(dot_product)
 
     new_df = pd.DataFrame(
         {

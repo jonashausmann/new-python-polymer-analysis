@@ -25,8 +25,11 @@ DIR_NAME_PATTERN = re.compile(
 # Shared critical-value config, used both when writing each run's per-frame
 # streak columns (in main, run in parallel) and when averaging the runs.
 variables_to_count_over_critical = {
-    "mean_curv": 27,
-    "max_curv": 119,
+    # curvature is now measured in radians, so these are the radian equivalents
+    # of the old 27 and 119 degree cutoffs
+    "mean_curv": np.radians(27),
+    "max_curv": np.radians(119),
+    # turning/winding numbers stay dimensionless (number of turns)
     "turning_number": 3.7,
     "winding_number": 3.4,
 }
@@ -40,7 +43,7 @@ variables_to_count_under_critical = {
 }
 values_for_crit_quant = [
     "Rg",
-    "degrees",
+    "radians",
     "mean_curv",
     "max_curv",
     "min_curv",
@@ -322,7 +325,7 @@ def find_directories_and_run_for_all(data_directory):
                 )
 
             variable_dict.setdefault("direction_mean", []).append(
-                np.mean(measurement_df["degrees"])
+                np.mean(measurement_df["radians"])
             )
             variable_dict.setdefault("mean_curv_mean", []).append(
                 np.mean(measurement_df["mean_curv"])
