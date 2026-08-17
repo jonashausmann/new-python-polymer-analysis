@@ -314,6 +314,7 @@ def find_directories_and_run_for_all(data_directory):
                 variable_mean = variable + "_mean"
                 variable_max = variable + "_max"
                 variable_min = variable + "_min"
+                variable_std = variable + "_std"
 
                 variable_dict.setdefault(variable_mean, []).append(
                     np.mean(measurement_df[variable])
@@ -323,6 +324,9 @@ def find_directories_and_run_for_all(data_directory):
                 )
                 variable_dict.setdefault(variable_min, []).append(
                     np.min(measurement_df[variable])
+                )
+                variable_dict.setdefault(variable_std, []).append(
+                    np.std(measurement_df[variable])
                 )
 
             variable_dict.setdefault("direction_mean", []).append(
