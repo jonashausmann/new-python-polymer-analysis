@@ -45,7 +45,7 @@ def copy_frame_graphs(data_dir: Path, dest_dir: Path) -> None:
             p for p in param_dir.iterdir() if p.is_dir() and p.name.startswith("RUN_")
         )
         for run_dir in run_dirs:
-            graphs_src = run_dir / "graphs"
+            graphs_src = run_dir / "figures"
             if not graphs_src.is_dir():
                 continue
             graphs_dst = dest_dir / param_dir.name / run_dir.name / "graphs"
