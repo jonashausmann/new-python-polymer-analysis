@@ -30,16 +30,17 @@ variables_to_count_over_critical = {
     "mean_curv": np.radians(27),
     "max_curv": np.radians(119),
     # turning/winding numbers stay dimensionless (number of turns)
-    "turning_number": 3.7,
-    "winding_number": 3.4,
+    "turning_number": 3,
+    "winding_number": 2.9,
 }
 """
     "density": 2,
 """
 variables_to_count_under_critical = {
-    "Rg": 6,
-    "winding_number": -3.4,
-    "turning_number": -3.7,
+    "Rg": 3.1,
+    "winding_number": -3,
+    "turning_number": -3,
+
 }
 values_for_crit_quant = [
     "Rg",
