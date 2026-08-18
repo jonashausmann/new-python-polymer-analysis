@@ -5,6 +5,7 @@ from analysis import parameters
 
 
 def calculate_curvature(coordinate_df, measurement_df, debug=False):
+    critical_curvature = np.radians(90)
     if debug:
         print("Calculating curvature")
 
@@ -28,6 +29,7 @@ def calculate_curvature(coordinate_df, measurement_df, debug=False):
 
     theta = np.arccos(dot_product)
 
+    critical_count_name = "number_of_bonds_over_curvature_" + str(critical_curvature)
     new_df = pd.DataFrame(
         {
             "frames": np.arange(frames),
@@ -36,8 +38,14 @@ def calculate_curvature(coordinate_df, measurement_df, debug=False):
             "max_curv_monomer": theta.argmax(axis=1) + 1,
             "min_curv": np.round(theta.min(axis=1), 5),
             "min_curv_monomer": theta.argmin(axis=1) + 1,
+            critical_count_name : np.sum(theta(axis=1 > critical_curvature))
         }
     )
 
     calculated_data_df = calculated_data_df.merge(new_df, on="frames", how="left")
     return calculated_data_df
+
+'''
+
+'''
+calculate_curvature()
