@@ -40,7 +40,6 @@ variables_to_count_under_critical = {
     "Rg": 3.1,
     "winding_number": -3,
     "turning_number": -3,
-
 }
 values_for_crit_quant = [
     "Rg",
