@@ -38,14 +38,9 @@ def calculate_curvature(coordinate_df, measurement_df, debug=False):
             "max_curv_monomer": theta.argmax(axis=1) + 1,
             "min_curv": np.round(theta.min(axis=1), 5),
             "min_curv_monomer": theta.argmin(axis=1) + 1,
-            critical_count_name : np.sum(theta(axis=1 > critical_curvature))
+            critical_count_name: np.sum(theta > critical_curvature, axis=1),
         }
     )
 
     calculated_data_df = calculated_data_df.merge(new_df, on="frames", how="left")
     return calculated_data_df
-
-'''
-
-'''
-calculate_curvature()
