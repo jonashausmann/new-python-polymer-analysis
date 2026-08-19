@@ -24,22 +24,29 @@ DIR_NAME_PATTERN = re.compile(
 
 # Shared critical-value config, used both when writing each run's per-frame
 # streak columns (in main, run in parallel) and when averaging the runs.
+bend_crit_angle = np.radians(90)
+no_bonds_over_name = "number_of_bonds_over_curvature_" + str(bend_crit_angle)
 variables_to_count_over_critical = {
     # curvature is now measured in radians, so these are the radian equivalents
     # of the old 27 and 119 degree cutoffs
     "mean_curv": np.radians(27),
     "max_curv": np.radians(119),
     # turning/winding numbers stay dimensionless (number of turns)
-    "turning_number": 3,
+    "turning_number": 2.9,
     "winding_number": 2.9,
+    no_bonds_over_name: 2,
+    "max_neighbor_monomer": 16,
+    "neighbor_count": 12,
 }
 """
     "density": 2,
 """
 variables_to_count_under_critical = {
-    "Rg": 3.1,
-    "winding_number": -3,
-    "turning_number": -3,
+    "Rg": 4,
+    "winding_number": -2.9,
+    "turning_number": -2.9,
+    "max_curv_monomer": 3,
+    "max_curv_monomer": 1,
 }
 values_for_crit_quant = [
     "Rg",
@@ -113,7 +120,7 @@ def main(simulation_directory):
         coordinate_df, measurement_df, debug
     )
     measurement_df = analysis.curvature_mean_max.calculate_curvature(
-        coordinate_df, measurement_df, debug
+        coordinate_df, measurement_df, bend_crit_angle, debug
     )
     measurement_df = analysis.turning_number.calculate_turning_number(
         coordinate_df, measurement_df, debug
@@ -268,7 +275,7 @@ def find_directories_and_run_for_all(data_directory):
                     )
                 )
                 unique_under_streak_name = (
-                    variable + "_under_" + str(critical_value) + "_unique_streaks"
+                    variable + "_under_" + str(critical) + "_unique_streaks"
                 )
                 unique_under_streak_dict.setdefault(
                     unique_under_streak_name, []

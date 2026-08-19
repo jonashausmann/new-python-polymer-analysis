@@ -4,8 +4,7 @@ import pandas as pd
 from analysis import parameters
 
 
-def calculate_curvature(coordinate_df, measurement_df, debug=False):
-    critical_curvature = np.radians(90)
+def calculate_curvature(coordinate_df, measurement_df, critical_curvature, debug=False):
     if debug:
         print("Calculating curvature")
 
@@ -39,6 +38,7 @@ def calculate_curvature(coordinate_df, measurement_df, debug=False):
             "min_curv": np.round(theta.min(axis=1), 5),
             "min_curv_monomer": theta.argmin(axis=1) + 1,
             critical_count_name: np.sum(theta > critical_curvature, axis=1),
+            "std_curv": np.round(theta.std(axis=1), 5),
         }
     )
 
