@@ -19,9 +19,9 @@ def calculate_turning_number(coordinate_df, measurement_df, debug=False):
 
     phi = np.arctan2(bead_vectors[..., 1], bead_vectors[..., 0])
     diffreence_between_bond_angles = np.diff(phi, axis=1)
-    diffreence_between_bond_angles = (
-        diffreence_between_bond_angles + np.pi
-    ) % (2 * np.pi) - np.pi
+    diffreence_between_bond_angles = (diffreence_between_bond_angles + np.pi) % (
+        2 * np.pi
+    ) - np.pi
 
     # total turning angle in radians, and the same quantity as a dimensionless
     # number of turns (unchanged from when this was computed in degrees)

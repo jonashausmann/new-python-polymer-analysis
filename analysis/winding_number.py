@@ -19,9 +19,7 @@ def winding_number_around_head(coordinate_df, measurement_df, debug=False):
 
     vector_from_head_to_bead = coords - head_bead
     vector_from_head_to_bead = vector_from_head_to_bead[:, 1:, :]
-    phi = np.arctan2(
-        vector_from_head_to_bead[..., 1], vector_from_head_to_bead[..., 0]
-    )
+    phi = np.arctan2(vector_from_head_to_bead[..., 1], vector_from_head_to_bead[..., 0])
     difference_between_angles = np.diff(phi, axis=1)
     difference_between_angles = (difference_between_angles + np.pi) % (
         2 * np.pi
