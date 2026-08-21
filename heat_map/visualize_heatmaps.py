@@ -47,11 +47,15 @@ def color_limits(variable, values):
 
 def draw_heatmap(ax, table, vmin, vmax):
     grid = table.to_numpy(dtype=float)
+    cmap = matplotlib.colormaps[COLORMAP].copy()
+    cmap.set_bad(color="white")
+    if vmin == 0:
+        grid = np.ma.masked_equal(grid, 0.0)
     image = ax.imshow(
         grid,
         origin="lower",
         aspect="auto",
-        cmap=COLORMAP,
+        cmap=cmap,
         vmin=vmin,
         vmax=vmax,
     )
@@ -153,6 +157,7 @@ def main():
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
     variables = measurement_columns(df)
+    df[variables] = df[variables].fillna(0.0)
     thetas = sorted(df["theta"].unique())
 
     written = []
